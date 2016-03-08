@@ -13,7 +13,7 @@ const debug = process && process.env && process.env.DEBUG_BEVRY_EDITIONS
  * @param {function} [_require=require] - the require method of the calling module, used to ensure require paths remain correct
  * @returns {void}
  */
-module.exports = function requireEditionsPackage (cwd /* :string */, _require /* :?function */) /* : void */ {
+module.exports.requirePackage = function requirePackage (cwd /* :string */, _require /* :?function */) /* : void */ {
 	// Load the package.json file to fetch `name` for debugging and `editions` for loading
 	const pathUtil = require('path')
 	const packagePath = pathUtil.join(cwd, 'package.json')
