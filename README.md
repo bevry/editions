@@ -108,7 +108,7 @@ If you are writing a package that could be used on both the client and the serve
 
 Here are some example configurations for your edition inspiration:
 
-- your source is an esnext edition, and compiles down to an es2015 edition, like [this package](https://github.com/bevry/editions)
+- your source is an esnext edition, and compiles down to an es2015 edition, like this very package!
   - `jsnext:main` and `jspm.main` point to the source edition's entry point
   - `browser` points to the es2015 edition's entry point
 - your source is an esnext + jsx edition, and compiles down to a esnext edition (no jsx), as well as an es2015 edition
