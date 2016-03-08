@@ -127,8 +127,8 @@ const config = {
 		// Seems like a good idea to error about this
 		'use-isnan': ERROR,
 
-		// We use YUIdoc, not JSDoc
-		'valid-jsdoc': IGNORE,
+		// We use JSDoc again
+		'valid-jsdoc': ERROR,
 
 		// Seems like a good idea to error about this
 		'valid-typeof': ERROR,
@@ -437,9 +437,7 @@ const config = {
 		// These rules are purely matters of style and are quite subjective.
 
 		// We don't use spaces with brackets
-		// 'array-bracket-spacing': [ERROR, 'never'],
-		'array-bracket-spacing': IGNORE,
-    	'babel/array-bracket-spacing': [ERROR, 'never'],
+		'array-bracket-spacing': [ERROR, 'never'],
 
 		// Disallow or enforce spaces inside of single line blocks
 		'block-spacing': [ERROR, 'always'],
@@ -519,9 +517,7 @@ const config = {
 		'max-statements': IGNORE,
 
 		// Constructors should be CamelCase
-		// 'new-cap': ERROR,
-		'new-cap': IGNORE,
-    	'babel/new-cap': ERROR,
+		'new-cap': ERROR,
 
 		// Always use parens when instantiating a class
 		'new-parens': ERROR,
@@ -591,7 +587,6 @@ const config = {
 
 		// Desirable, but too many edge cases it turns out where it is actually preferred
 		'object-curly-spacing': IGNORE,
-	    'babel/object-curly-spacing': IGNORE,
 
 		// We like multiple var statements
 		'one-var': IGNORE,
@@ -664,9 +659,7 @@ const config = {
 		'arrow-body-style': [ERROR, 'as-needed'],
 
 		// We do this, no reason why, just what we do
-		// 'arrow-parens': [ERROR, 'always'],
-		'arrow-parens': IGNORE,
-	    'babel/arrow-parens': [ERROR, 'always'],
+		'arrow-parens': [ERROR, 'always'],
 
 		// Require consistent spacing for arrow functions
 		'arrow-spacing': ERROR,
@@ -675,9 +668,7 @@ const config = {
 		'constructor-super': ERROR,
 
 		// Seems the most consistent location for it
-		// 'generator-star-spacing': [ERROR, 'before'],
-		'generator-star-spacing': IGNORE,
-		'babel/generator-star-spacing':  [ERROR, 'before'],
+		'generator-star-spacing': [ERROR, 'before'],
 
 		// Seems sensible
 		'no-confusing-arrow': ERROR,
@@ -713,9 +704,7 @@ const config = {
 		'no-var': WARN,
 
 		// Enforce ES6 object shorthand
-		// 'object-shorthand': ERROR,
-		'object-shorthand': IGNORE,
-	    'babel/object-shorthand': ERROR,
+		'object-shorthand': ERROR,
 
 		// Better performance when running native
 		// but horrible performance if not running native as could fallback to bind
@@ -759,19 +748,58 @@ const config = {
 	}
 }
 
+// ------------------------------------
+// Enhancements
+
 const package = require('./package.json')
+
+if ( 'babel-eslint' in package.devDependencies ) {
+	config.parser = 'babel-eslint'
+}
+
 if ( 'eslint-plugin-react' in package.devDependencies ) {
 	config.extends.push('plugin:react/recommended')
 	config.plugins.push('react')
 }
+
 if ( 'eslint-plugin-babel' in package.devDependencies ) {
 	config.plugins.push('babel')
+	const replacements = [
+		'array-bracket-spacing',
+		'new-cap',
+		'object-curly-spacing',
+		'arrow-parens',
+		'generator-star-spacing',
+		'object-shorthand'
+	]
+	replacements.forEach(function (key) {
+		if ( key in config.rules ) {
+			config.rules['babel/' + key] = config.rules[key]
+			config.rules[key] = IGNORE
+		}
+	})
 }
+else {
+	Object.keys(config.rules).forEach(function (key) {
+		if ( key.indexOf('babel/') === 0 ) {
+			delete config.rules[key]
+		}
+	})
+}
+
 if ( 'eslint-plugin-flow-vars' in package.devDependencies ) {
 	config.plugins.push('flow-vars')
 }
-if ( 'babel-eslint' in package.devDependencies ) {
-	config.parser = 'babel-eslint'
+else {
+	Object.keys(config.rules).forEach(function (key) {
+		if ( key.indexOf('flow-vars/') === 0 ) {
+			delete config.rules[key]
+		}
+	})
 }
+
+
+// ------------------------------------
+// Export
 
 module.exports = config
