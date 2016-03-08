@@ -61,7 +61,7 @@ Inside the same directory as your `package.json` file, create a `index.js` file 
 require('editions').requirePackage(__dirname, require)
 ```
 
-Inside your `package.json` file, add the following based on your own editions and [syntaxes](https://github.com/bevry/editions/wiki/Syntaxes):
+Inside your `package.json` file, add the following however make it based on your own editions and [syntaxes](https://github.com/bevry/editions/wiki/Syntaxes):
 
 ``` json
 {
@@ -78,7 +78,9 @@ Inside your `package.json` file, add the following based on your own editions an
 }
 ```
 
-This combination of `index.js` and that `package.json` combination will have it so when your package is required, the source edition will try and be loaded first if its syntaxes are not unsupported, if it cannot be loaded, then the es2015 edition will be loaded if its syntaxes are not unsupported, if no editions are supported, an error will be thrown.
+The `editions` property defines our editions. The order of editions are in descending order of preference. In other words, the first edition is indicated as most preferable so is attempted to load first, if its syntaxes are not unsupported, then it will try to load, if it cannot be loaded, then that syntax combination is marked as unsupported, and the next edition is attempted, and the next, and the next, until either one is used sucessfully, or none can be used, in which case an error is thrown which is expected as that situation means the current environment could not run any of our package's editions.
+
+The first edition should always be the edition that is closest to your source code, and the last edition should always be the edition that is most widely compatible.
 
 Setting the environment variable `DEBUG_BEVRY_EDITIONS` to `true` will output debug information when an edition fails to load.
 
