@@ -99,9 +99,9 @@ If you are writing a package that could be used on both the client and the serve
 }
 ```
 
-- `jsnext:main` is used for [rollup](http://rollupjs.org), and should point to your non-custom esnext edition
-- `browser` is used for [browserify](http://browserify.org), and should point to your es2015 edition
-- `jspm` is used for [jspm](http://jspm.io), and should point to your non-custom esnext edition
+- `jsnext:main` is used for [rollup](http://rollupjs.org), and should exist if you have an edition to point to that has standard (no custom) esnext features and use the `import` syntax - [details](https://github.com/rollup/rollup/wiki/jsnext:main)
+- `browser` is used for [browserify](http://browserify.org), and should exist if you have an edition to point to that targets older environments (such as es2015) and uses the `require` syntax - [details](https://github.com/substack/node-browserify#browser-field)
+- `jspm` is used for [jspm](http://jspm.io), and should exist if you have an edition to point to that has standard (no custom) esnext features - use `"format": "cjs"` for `require` syntax, and `"format": "esm"` for `import` syntax - [details](https://github.com/systemjs/systemjs/blob/master/docs/module-formats.md)
 
 
 ### Combinations
