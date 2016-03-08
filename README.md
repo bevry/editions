@@ -104,14 +104,14 @@ If you are writing a package that could be used on both the client and the serve
 
 Here are some example configurations for your edition inspiration:
 
-- your source is an esnext edition, and compiles down to an es2015 edition, like this very package!
-  - `jsnext:main` and `jspm.main` point to the source edition's entry point
-  - `browser` points to the es2015 edition's entry point
-- your source is an esnext + jsx edition, and compiles down to a esnext edition (no jsx), as well as an es2015 edition
-  - `jsnext:main` and `jspm.main` point to the esnext edition's entry point
-  - `browser` points to the es2015 edition's entry point
-- your source is a coffeescript edition, and compiles down to an es5 edition
-  - `jsnext:main`, `jspm.main` and `browser` point to the es5 edition's entry point
+- your source is an esnext + import edition, and compiles down to an es2015 + require edition
+  - `jsnext:main` point to the source edition's entry point
+  - `browser` points to the es2015 + require edition's entry point
+- your source is an esnext + jsx + import edition, and compiles down to a esnext + import edition, and an esnext + require edition, and an es2015 + require edition
+  - `jsnext:main` point to the esnext + import edition's entry point
+  - `browser` points to the es2015 + require edition's entry point
+- your source is a coffeescript + require edition, and compiles down to an es5 + require edition
+  - `jsnext:main` and `browser` point to the es5 + require edition's entry point
 
 
 ### Suggestions
