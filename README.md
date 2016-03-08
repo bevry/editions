@@ -58,10 +58,10 @@ Publish multiple editions for your JavaScript packages consistently and easily (
 Inside the same directory as your `package.json` file, create a `index.js` file that contains:
 
 ``` javascript
-require('editions').requirePackage(__dirname, require)
+module.exports = require('editions').requirePackage(__dirname, require)
 ```
 
-Inside your `package.json` file, add the following however make it based on your own editions and [syntaxes](https://github.com/bevry/editions/wiki/Syntaxes):
+Inside your `package.json` file, add the following, however make it based on your own editions and [syntaxes](https://github.com/bevry/editions/wiki/Syntaxes):
 
 ``` json
 {
