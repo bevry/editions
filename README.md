@@ -96,7 +96,7 @@ If you are writing a package that could be used on both the client and the serve
 }
 ```
 
-- `jsnext:main` is used for [rollup](http://rollupjs.org), and should exist if you have an edition to point to that has standard (no custom) esnext features and use the `import` syntax - [details](https://github.com/rollup/rollup/wiki/jsnext:main)
+- `jsnext:main` is used for [rollup](http://rollupjs.org), and should exist if you have an edition to point to that has standard (no custom) esnext features and uses the `import` syntax - [details](https://github.com/rollup/rollup/wiki/jsnext:main)
 - `browser` is used for [browserify](http://browserify.org), and should exist if you have an edition to point to that targets older environments (such as es2015) and uses the `require` syntax - [details](https://github.com/substack/node-browserify#browser-field)
 
 
@@ -107,7 +107,7 @@ Here are some example configurations for your edition inspiration:
 - your source is an esnext + import edition, and compiles down to an es2015 + require edition
   - `jsnext:main` point to the source edition's entry point
   - `browser` points to the es2015 + require edition's entry point
-- your source is an esnext + jsx + import edition, and compiles down to a esnext + import edition, and an esnext + require edition, and an es2015 + require edition
+- your source is an esnext + jsx + import edition, and compiles down to an esnext + import edition, and an esnext + require edition, and an es2015 + require edition
   - `jsnext:main` point to the esnext + import edition's entry point
   - `browser` points to the es2015 + require edition's entry point
 - your source is a coffeescript + require edition, and compiles down to an es5 + require edition
