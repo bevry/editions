@@ -65,7 +65,8 @@ Inside your `package.json` file, add the following based on your own editions an
 
 ``` json
 {
-    "editions": [{
+    "editions": [
+        {
             "syntaxes": ["esnext", "require", "arrows", "const", "let", "destructuring", "flow type comments"],
             "entry": "source/index.js"
         }, {
@@ -96,30 +97,30 @@ If you are writing a package that could be used on both the client and the serve
 }
 ```
 
-> - `jsnext:main` is used for [rollup](http://rollupjs.org), and should point to your non-custom esnext edition
-> - `browser` is used for [browserify](http://browserify.org), and should point to your es2015 edition
-> - `jspm` is used for [jspm](http://jspm.io), and should point to your non-custom esnext edition
+- `jsnext:main` is used for [rollup](http://rollupjs.org), and should point to your non-custom esnext edition
+- `browser` is used for [browserify](http://browserify.org), and should point to your es2015 edition
+- `jspm` is used for [jspm](http://jspm.io), and should point to your non-custom esnext edition
 
 
 ### Combinations
 
-Different edition configurations could be like so:
+Here are some example configurations for your edition inspiration:
 
 - your source is an esnext edition, and compiles down to an es2015 edition, like [this package](https://github.com/bevry/editions)
   - `jsnext:main` and `jspm.main` point to the source edition's entry point
   - `browser` points to the es2015 edition's entry point
-- your source is an esnext + jsx edition, and compiles down to a esnext edition (without jsx), as well as a es2015 edition
+- your source is an esnext + jsx edition, and compiles down to a esnext edition (no jsx), as well as an es2015 edition
   - `jsnext:main` and `jspm.main` point to the esnext edition's entry point
   - `browser` points to the es2015 edition's entry point
-- your source is a coffeescript edition, and compiles to a es5 edition
+- your source is a coffeescript edition, and compiles down to an es5 edition
   - `jsnext:main`, `jspm.main` and `browser` point to the es5 edition's entry point
 
 
 ### Suggestions
 
-If you haven't setup your build/compilation tooling yet, we can suggest [bevry/base](https://github.com/bevry/base)
+If you haven't setup your build/compilation tooling yet, we can suggest [bevry/base](https://github.com/bevry/base) for getting up and running.
 
-[You will also find resources, guides and examples on our Wiki](https://github.com/bevry/editions/wiki)
+[Our Wiki also contains resources, guides and examples for using editions.](https://github.com/bevry/editions/wiki)
 
 
 <!-- HISTORY/ -->
