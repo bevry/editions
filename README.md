@@ -65,16 +65,16 @@ Inside your `package.json` file, add the following based on your own editions an
 
 ``` json
 {
-    "editions": [
-        {
-            "syntaxes": ["esnext", "require", "arrows", "const", "let", "destructuring", "flow type comments"],
-            "entry": "source/index.js"
-        }, {
-            "syntaxes": ["es2015", "require"],
-            "entry": "es2015/index.js"
-        }
-    ],
-    "main": "index.js"
+  "editions": [
+    {
+      "syntaxes": ["esnext", "require", "arrows", "const", "let", "destructuring", "flow type comments"],
+      "entry": "source/index.js"
+    }, {
+      "syntaxes": ["es2015", "require"],
+      "entry": "es2015/index.js"
+    }
+  ],
+  "main": "index.js"
 }
 ```
 
@@ -89,11 +89,11 @@ If you are writing a package that could be used on both the client and the serve
 
 ``` json
 {
-    "jsnext:main": "source/index.js",
-    "browser": "es2015/index.js",
-    "jspm": {
-        "main": "source/index.js"
-    }
+  "jsnext:main": "source/index.js",
+  "browser": "es2015/index.js",
+  "jspm": {
+    "main": "source/index.js"
+  }
 }
 ```
 
