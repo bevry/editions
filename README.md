@@ -122,7 +122,7 @@ Here are some example configurations for your edition inspiration:
 
 If you haven't setup your build/compilation tooling yet, we can suggest [bevry/base](https://github.com/bevry/base) for getting up and running.
 
-[Our Wiki also contains resources, guides and examples for using editions.](https://github.com/bevry/editions/wiki)
+[Our Wiki also contains extra resources, guides and examples.](https://github.com/bevry/editions/wiki)
 
 
 <!-- HISTORY/ -->
