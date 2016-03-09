@@ -1,6 +1,6 @@
 {
   "name": "editions",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Publish multiple editions for your JavaScript packages consistently and easily (e.g. source edition, esnext edition, es2015 edition)",
   "homepage": "https://github.com/bevry/editions",
   "license": "MIT",
@@ -79,12 +79,7 @@
       "entry": "es2015/index.js"
     }
   ],
-  "main": "esnextguardian.js",
-  "jsnext": "source/index.js",
-  "browser": "es2015/index.js",
-  "jspm": {
-    "main": "source/index.js"
-  },
+  "main": "es2015/index.js",
   "scripts": {
     "setup": "npm install",
     "clean": "rm -Rf ./docs ./es2015",
