@@ -30,86 +30,9 @@ Publish multiple editions for your JavaScript packages consistently and easily (
 
 <!-- /DESCRIPTION -->
 
+## Discover
 
-<!-- INSTALL/ -->
-
-<h2>Install</h2>
-
-<a href="https://npmjs.com" title="npm is a package manager for javascript"><h3>NPM</h3></a><ul>
-<li>Install: <code>npm install --save editions</code></li>
-<li>Use: <code>require('editions')</code></li></ul>
-
-<!-- /INSTALL -->
-
-
-## Usage
-
-### Implementation
-
-Inside the same directory as your `package.json` file, create a `index.js` file that contains:
-
-``` javascript
-module.exports = require('editions').requirePackage(__dirname, require)
-```
-
-Inside your `package.json` file, add the following, however make it based on your own editions and [syntaxes](https://github.com/bevry/editions/wiki/Syntaxes):
-
-``` json
-{
-  "editions": [
-    {
-      "syntaxes": ["esnext", "require", "arrows", "const", "let", "destructuring", "flow type comments"],
-      "entry": "source/index.js"
-    }, {
-      "syntaxes": ["es2015", "require"],
-      "entry": "es2015/index.js"
-    }
-  ],
-  "main": "index.js"
-}
-```
-
-The `editions` property defines our editions. The order of editions are in descending order of preference. In other words, the first edition is indicated as most preferable so is attempted to load first, if its syntaxes are not unsupported, then it will try to load, if it cannot be loaded, then that syntax combination is marked as unsupported, and the next edition is attempted, and the next, and the next, until either one is used sucessfully, or none can be used, in which case an error is thrown which is expected as that situation means the current environment could not run any of our package's editions.
-
-The first edition should always be the edition that is closest to your source code, and the last edition should always be the edition that is most widely compatible.
-
-Setting the environment variable `DEBUG_BEVRY_EDITIONS` to `true` will output debug information when an edition fails to load.
-
-
-### Browsers
-
-If you are writing a package that could be used on both the client and the server, then you probably also want to include these too:
-
-``` json
-{
-  "jsnext:main": "source/index.js",
-  "browser": "es2015/index.js"
-}
-```
-
-- `jsnext:main` is used for [rollup](http://rollupjs.org), and should exist if you have an edition to point to that has standard (no custom) esnext features and uses the `import` syntax - [details](https://github.com/rollup/rollup/wiki/jsnext:main)
-- `browser` is used for [browserify](http://browserify.org), and should exist if you have an edition to point to that targets older environments (such as es2015) and uses the `require` syntax - [details](https://github.com/substack/node-browserify#browser-field)
-
-
-### Combinations
-
-Here are some example configurations for your edition inspiration:
-
-- your source is an esnext + import edition, and compiles down to an es2015 + require edition
-  - `jsnext:main` points to the source edition's entry point
-  - `browser` points to the es2015 + require edition's entry point
-- your source is an esnext + jsx + import edition, and compiles down to an esnext + import edition, and an esnext + require edition, and an es2015 + require edition
-  - `jsnext:main` points to the esnext + import edition's entry point
-  - `browser` points to the es2015 + require edition's entry point
-- your source is a coffeescript + require edition, and compiles down to an es5 + require edition
-  - `browser` points to the es5 + require edition's entry point
-
-
-### Suggestions
-
-If you haven't setup your build/compilation tooling yet, we can suggest [bevry/base](https://github.com/bevry/base) for getting up and running.
-
-[Our Wiki also contains extra resources, guides and examples.](https://github.com/bevry/editions/wiki)
+[Discover what the fuss is about!](https://github.com/bevry/editions/wiki)
 
 
 <!-- HISTORY/ -->
