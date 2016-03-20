@@ -3,7 +3,7 @@
 // Editions Loader
 
 // Cache of which syntax combinations are supported or unsupported, hash of booleans
-const supportedSyntaxes = {}
+const syntaxFailures = {}
 
 /**
  * Cycle through the editions for a package and require the correct one
@@ -16,12 +16,20 @@ module.exports.requirePackage = function requirePackage (cwd /* :string */, _req
 	// Fetch the result of the debug value
 	// It is here to allow the environment to change it at runtime as needed
 	const debug = process && process.env && process.env.DEBUG_BEVRY_EDITIONS
+	// const blacklist = process && process.env && process.env.DEBUG_BEVRY_IGNORE_BLACKLIST
 
 	// Load the package.json file to fetch `name` for debugging and `editions` for loading
 	const pathUtil = require('path')
 	const packagePath = pathUtil.join(cwd, 'package.json')
 	const {name, editions} = require(packagePath)
 	// name:string, editions:array
+
+	if ( !editions || editions.length === 0 ) {
+		throw new Error(`No editions have been specified for the package ${name}`)
+	}
+
+	// Note the last error message
+	let lastEditionFailure
 
 	// Cycle through the editions
 	for ( let i = 0; i < editions.length; ++i ) {
@@ -32,10 +40,10 @@ module.exports.requirePackage = function requirePackage (cwd /* :string */, _req
 
 		// Checks
 		if ( customEntry && !directory ) {
-			throw new Error(`The package ${name} did not specify a directory property on its editions which is required for the custom entry point: ${customEntry}`)
+			throw new Error(`The package ${name} has no directory property on its editions which is required when using custom entry point: ${customEntry}`)
 		}
 		else if ( !entry ) {
-			throw new Error(`The package ${name} did not specify a entry property on its editions which is required for default entry`)
+			throw new Error(`The package ${name} has no entry property on its editions which is required when using default entry`)
 		}
 
 		// Get the correct entry path
@@ -45,7 +53,9 @@ module.exports.requirePackage = function requirePackage (cwd /* :string */, _req
 		const s = syntaxes && syntaxes.map((i) => i.toLowerCase()).sort().join(', ')
 
 		// Is this syntax combination unsupported? If so skip it
-		if ( s && supportedSyntaxes[s] === false ) {
+		if ( s && syntaxFailures[s] ) {
+			lastEditionFailure = new Error(`Skipped package ${name} edition at ${entryPath} due to blacklisted syntax:\n${s}\n${syntaxFailures[s].stack}`)
+			if ( debug )  console.error(`DEBUG: ${lastEditionFailure.stack}`)
 			continue
 		}
 
@@ -54,19 +64,16 @@ module.exports.requirePackage = function requirePackage (cwd /* :string */, _req
 			return _require(entryPath)
 		}
 		catch ( error ) {
-			// The combination failed so debug it
-			if ( debug ) {
-				console.error('DEBUG: ' + new Error(`The package ${name} failed to load the edition at ${entryPath} with syntaxes:\n${s || 'no syntaxes specified'}\n\n${error.stack}`).stack)
-			}
+			// Note the error with more details
+			lastEditionFailure = new Error(`Unable to load package ${name} edition at ${entryPath} with syntax:\n${s || 'no syntaxes specified'}\n${error.stack}`)
+			if ( debug )  console.error(`DEBUG: ${lastEditionFailure.stack}`)
 
 			// Blacklist the combination, even if it may have worked before
 			// Perhaps in the future note if that if it did work previously, then we should instruct module owners to be more specific with their syntaxes
-			if ( s ) {
-				supportedSyntaxes[s] = false
-			}
+			if ( s )  syntaxFailures[s] = lastEditionFailure
 		}
 	}
 
 	// No edition was returned, so there is no suitable edition
-	throw new Error(`The package ${name} has no suitable edition for this environment`)
+	throw new Error(`The package ${name} has no suitable edition for this environment${lastEditionFailure && ', the last edition failed with:\n' + lastEditionFailure.stack || ''}`)
 }

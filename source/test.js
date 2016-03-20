@@ -15,7 +15,7 @@ suite('editions', function (suite, test) {
 		catch (error) {
 			equal(
 				error.message,
-				'The package editions did not specify a directory property on its editions which is required for the custom entry point: test-hello.js',
+				'The package editions has no directory property on its editions which is required when using custom entry point: test-hello.js',
 				'error message was as expected'
 			)
 			return
