@@ -5,9 +5,6 @@
 // Cache of which syntax combinations are supported or unsupported, hash of booleans
 const supportedSyntaxes = {}
 
-// Cache the result of debug check
-const debug = process && process.env && process.env.DEBUG_BEVRY_EDITIONS
-
 /**
  * Cycle through the editions for a package and require the correct one
  * @param {string} cwd - the path of the package, used to load package.json:editions and handle relative edition entry points
@@ -16,6 +13,10 @@ const debug = process && process.env && process.env.DEBUG_BEVRY_EDITIONS
  * @returns {void}
  */
 module.exports.requirePackage = function requirePackage (cwd /* :string */, _require /* :function */, customEntry /* :: ?:string */ ) /* : void */ {
+	// Fetch the result of the debug value
+	// It is here to allow the environment to change it at runtime as needed
+	const debug = process && process.env && process.env.DEBUG_BEVRY_EDITIONS
+
 	// Load the package.json file to fetch `name` for debugging and `editions` for loading
 	const pathUtil = require('path')
 	const packagePath = pathUtil.join(cwd, 'package.json')
