@@ -30,10 +30,11 @@ Publish multiple editions for your JavaScript packages consistently and easily (
 
 <!-- /DESCRIPTION -->
 
-
 ## Discover
 
 [Discover what the fuss is about!](https://github.com/bevry/editions/wiki)
+
+[View the API documentation.](http://rawgit.com/bevry/editions/master/docs/index.html)
 
 
 <!-- HISTORY/ -->
