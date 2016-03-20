@@ -1,5 +1,6 @@
 /* @flow */
 /* eslint no-console:0 */
+// Editions Loader
 
 // Cache of which syntax combinations are supported or unsupported, hash of booleans
 const supportedSyntaxes = {}
@@ -10,44 +11,61 @@ const debug = process && process.env && process.env.DEBUG_BEVRY_EDITIONS
 /**
  * Cycle through the editions for a package and require the correct one
  * @param {string} cwd - the path of the package, used to load package.json:editions and handle relative edition entry points
- * @param {function} [_require=require] - the require method of the calling module, used to ensure require paths remain correct
+ * @param {function} _require - the require method of the calling module, used to ensure require paths remain correct
+ * @param {string} [customEntry] - an optional override for the entry of an edition, requires the edition to specify a `directory` property
  * @returns {void}
  */
-module.exports.requirePackage = function requirePackage (cwd /* :string */, _require /* :?function */) /* : void */ {
+module.exports.requirePackage = function requirePackage (cwd /* :string */, _require /* :function */, customEntry /* :: ?:string */ ) /* : void */ {
 	// Load the package.json file to fetch `name` for debugging and `editions` for loading
 	const pathUtil = require('path')
 	const packagePath = pathUtil.join(cwd, 'package.json')
 	const {name, editions} = require(packagePath)
 	// name:string, editions:array
 
+	// Cycle through the editions
 	for ( let i = 0; i < editions.length; ++i ) {
 		// Extract relevant parts out of the edition
 		// and generate a lower case, sorted, and joined combination of our syntax for caching
-		const {syntaxes, entry} = editions[i]
-		// syntaxes:array, entry:string
-		const editionPath = pathUtil.join(cwd, entry)
-		const s = syntaxes.map((i) => i.toLowercase()).sort().join(', ')
+		const {syntaxes, entry, directory} = editions[i]
+		// syntaxes:?array, entry:?string, directory:?string
+
+		// Checks
+		if ( customEntry && !directory ) {
+			throw new Error(`The package ${name} did not specify a directory property on its editions which is required for the custom entry point: ${customEntry}`)
+		}
+		else if ( !entry ) {
+			throw new Error(`The package ${name} did not specify a entry property on its editions which is required for default entry`)
+		}
+
+		// Get the correct entry path
+		const entryPath = customEntry ? pathUtil.resolve(cwd, directory, customEntry) : pathUtil.resolve(cwd, entry)
+
+		// Convert syntaxes into a sorted lowercase string
+		const s = syntaxes && syntaxes.map((i) => i.toLowercase()).sort().join(', ')
 
 		// Is this syntax combination unsupported? If so skip it
-		if ( supportedSyntaxes[s] === false ) {
+		if ( s && supportedSyntaxes[s] === false ) {
 			continue
 		}
 
 		// Try and load this syntax combination
 		try {
-			return (_require || require)(editionPath)
+			return _require(entryPath)
 		}
 		catch ( error ) {
 			// The combination failed so debug it
 			if ( debug ) {
-				console.log('DEBUG: ' + new Error(`The package ${name} failed to load the syntaxes ${s}:\n ${error.stack}`).stack)
+				console.error('DEBUG: ' + new Error(`The package ${name} failed to load the syntaxes:\n${s || 'no syntaxes specified'}\n\n${error.stack}`).stack)
 			}
 
 			// Blacklist the combination, even if it may have worked before
 			// Perhaps in the future note if that if it did work previously, then we should instruct module owners to be more specific with their syntaxes
-			supportedSyntaxes[s] = false
+			if ( s ) {
+				supportedSyntaxes[s] = false
+			}
 		}
 	}
 
+	// No edition was returned, so there is no suitable edition
 	throw new Error(`The package ${name} has no suitable edition for this environment`)
 }
