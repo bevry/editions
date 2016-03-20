@@ -33,9 +33,9 @@
         <div class='px2'>
 <div class='py1'><section class='py2 clearfix'>
   <h2 id='requirePackage' class='mt0'>
-    requirePackage<span class='gray'>(cwd, [_require])</span>
+    requirePackage<span class='gray'>(cwd, _require, [customEntry])</span>
   </h2>
-    <p><a href='https://github.com/bevry/editions/blob/26dd9081bb91213a6188a53893924e8c18875132/source/index.js#L16-L53'><code>source/index.js</code></a></p>
+    <p><a href='https://github.com/bevry/editions/blob/e17782e2f46c228ec3f0a443f17b5b51e043d711/source/index.js#L18-L69'><code>source/index.js</code></a></p>
   
   
   
@@ -54,12 +54,19 @@
           </div>
         </li>
         <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">function</a>
-=
  <strong>_require</strong>
-            (default <code>require</code>)
           :
           <div class='force-inline'>
             <p>the require method of the calling module, used to ensure require paths remain correct</p>
+
+          </div>
+        </li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
+=
+ <strong>customEntry</strong>
+          :
+          <div class='force-inline'>
+            <p>an optional override for the entry of an edition, requires the edition to specify a <code>directory</code> property</p>
 
           </div>
         </li>

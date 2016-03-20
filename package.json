@@ -1,6 +1,6 @@
 {
   "name": "editions",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Publish multiple editions for your JavaScript packages consistently and easily (e.g. source edition, esnext edition, es2015 edition)",
   "homepage": "https://github.com/bevry/editions",
   "license": "MIT",
@@ -60,23 +60,27 @@
   },
   "editions": [
     {
+      "description": "Source + ESNext + Require + Flow Type Comments",
+      "entry": "source/index.js",
       "syntaxes": [
+        "javascript",
         "esnext",
         "require",
         "arrows",
+        "destructuring",
         "const",
         "let",
-        "destructuring",
         "flow type comments"
-      ],
-      "entry": "source/index.js"
+      ]
     },
     {
+      "description": "Babel Compiled + ES2015 + Require",
+      "entry": "es2015/index.js",
       "syntaxes": [
+        "javascript",
         "es2015",
         "require"
-      ],
-      "entry": "es2015/index.js"
+      ]
     }
   ],
   "main": "es2015/index.js",
