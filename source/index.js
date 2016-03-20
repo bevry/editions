@@ -56,7 +56,7 @@ module.exports.requirePackage = function requirePackage (cwd /* :string */, _req
 		catch ( error ) {
 			// The combination failed so debug it
 			if ( debug ) {
-				console.error('DEBUG: ' + new Error(`The package ${name} failed to load the syntaxes:\n${s || 'no syntaxes specified'}\n\n${error.stack}`).stack)
+				console.error('DEBUG: ' + new Error(`The package ${name} failed to load the edition at ${entryPath} with syntaxes:\n${s || 'no syntaxes specified'}\n\n${error.stack}`).stack)
 			}
 
 			// Blacklist the combination, even if it may have worked before
