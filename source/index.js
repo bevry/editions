@@ -42,7 +42,7 @@ module.exports.requirePackage = function requirePackage (cwd /* :string */, _req
 		const entryPath = customEntry ? pathUtil.resolve(cwd, directory, customEntry) : pathUtil.resolve(cwd, entry)
 
 		// Convert syntaxes into a sorted lowercase string
-		const s = syntaxes && syntaxes.map((i) => i.toLowercase()).sort().join(', ')
+		const s = syntaxes && syntaxes.map((i) => i.toLowerCase()).sort().join(', ')
 
 		// Is this syntax combination unsupported? If so skip it
 		if ( s && supportedSyntaxes[s] === false ) {
