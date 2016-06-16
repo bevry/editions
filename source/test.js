@@ -1,5 +1,6 @@
 /* @flow */
 /* eslint no-console:0 */
+require('babel-polyfill')  // node 0.10 compat
 const {requirePackage} = require('./index')
 const {suite} = require('joe')
 const {equal} = require('assert-helpers')
@@ -15,7 +16,7 @@ suite('editions', function (suite, test) {
 		catch (error) {
 			equal(
 				error.message,
-				'The package editions has no directory property on its editions which is required when using custom entry point: test-hello.js',
+				'The package [editions] has no directory property on its editions which is required when using custom entry point: test-hello.js',
 				'error message was as expected'
 			)
 			return

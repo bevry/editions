@@ -2,6 +2,15 @@
 /* eslint no-console:0 */
 // Editions Loader
 
+// Helper class to display nested error in a sensible way
+class NestedError extends Error {
+	constructor (message /* :string */, parent /* :Error */) {
+		message += ' due to next parent error'
+		super(message)
+		this.stack += '\n\nParent ' + (parent.stack || parent.message || parent).toString()
+	}
+}
+
 // Cache of which syntax combinations are supported or unsupported, hash of booleans
 const syntaxFailures = {}
 
@@ -25,7 +34,7 @@ module.exports.requirePackage = function requirePackage (cwd /* :string */, _req
 	// name:string, editions:array
 
 	if ( !editions || editions.length === 0 ) {
-		throw new Error(`No editions have been specified for the package ${name}`)
+		throw new Error(`No editions have been specified for the package [${name}]`)
 	}
 
 	// Note the last error message
@@ -38,12 +47,12 @@ module.exports.requirePackage = function requirePackage (cwd /* :string */, _req
 		const {syntaxes, entry, directory} = editions[i]
 		// syntaxes:?array, entry:?string, directory:?string
 
-		// Checks
+		// Checks with hard failures to alert the developer
 		if ( customEntry && !directory ) {
-			throw new Error(`The package ${name} has no directory property on its editions which is required when using custom entry point: ${customEntry}`)
+			throw new Error(`The package [${name}] has no directory property on its editions which is required when using custom entry point: ${customEntry}`)
 		}
 		else if ( !entry ) {
-			throw new Error(`The package ${name} has no entry property on its editions which is required when using default entry`)
+			throw new Error(`The package [${name}] has no entry property on its editions which is required when using default entry`)
 		}
 
 		// Get the correct entry path
@@ -52,9 +61,10 @@ module.exports.requirePackage = function requirePackage (cwd /* :string */, _req
 		// Convert syntaxes into a sorted lowercase string
 		const s = syntaxes && syntaxes.map((i) => i.toLowerCase()).sort().join(', ')
 
-		// Is this syntax combination unsupported? If so skip it
+		// Is this syntax combination unsupported? If so skip it with a soft failure to try the next edition
 		if ( s && syntaxFailures[s] ) {
-			lastEditionFailure = new Error(`Skipped package ${name} edition at ${entryPath} due to blacklisted syntax:\n${s}\n${syntaxFailures[s].stack}`)
+			const syntaxFailure = syntaxFailures[s]
+			lastEditionFailure = new NestedError(`Skipped package [${name}] edition at [${entryPath}] with blacklisted syntax [${s}]`, syntaxFailure)
 			if ( debug )  console.error(`DEBUG: ${lastEditionFailure.stack}`)
 			continue
 		}
@@ -65,7 +75,7 @@ module.exports.requirePackage = function requirePackage (cwd /* :string */, _req
 		}
 		catch ( error ) {
 			// Note the error with more details
-			lastEditionFailure = new Error(`Unable to load package ${name} edition at ${entryPath} with syntax:\n${s || 'no syntaxes specified'}\n${error.stack}`)
+			lastEditionFailure = new NestedError(`Unable to load package [${name}] edition at [${entryPath}] with syntax [${s || 'no syntaxes specified'}]`, error)
 			if ( debug )  console.error(`DEBUG: ${lastEditionFailure.stack}`)
 
 			// Blacklist the combination, even if it may have worked before
@@ -75,5 +85,6 @@ module.exports.requirePackage = function requirePackage (cwd /* :string */, _req
 	}
 
 	// No edition was returned, so there is no suitable edition
-	throw new Error(`The package ${name} has no suitable edition for this environment${lastEditionFailure && ', the last edition failed with:\n' + lastEditionFailure.stack || ''}`)
+	if ( !lastEditionFailure )  lastEditionFailure = new Error(`The package [${name}] failed without any actual errors...`)
+	throw new NestedError(`The package [${name}] has no suitable edition for this environment`, lastEditionFailure)
 }

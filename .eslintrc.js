@@ -1,10 +1,11 @@
-// 2016 March 8
+// 2016 May 11
 // https://github.com/bevry/base
 // http://eslint.org
+// This code must be able to run on Node 0.10
 /* eslint no-warning-comments: 0 */
-const IGNORE = 0, WARN = 1, ERROR = 2, MAX_PARAMS = 4
+var IGNORE = 0, WARN = 1, ERROR = 2, MAX_PARAMS = 4
 
-const config = {
+var config = {
 	extends: ['eslint:recommended'],
 	plugins: [],
 	parserOptions: {
@@ -128,7 +129,10 @@ const config = {
 		'use-isnan': ERROR,
 
 		// We use JSDoc again
-		'valid-jsdoc': ERROR,
+		'valid-jsdoc': [ERROR, {
+			"requireParamDescription": false,
+			"requireReturnDescription": false
+		}],
 
 		// Seems like a good idea to error about this
 		'valid-typeof': ERROR,
@@ -751,20 +755,22 @@ const config = {
 // ------------------------------------
 // Enhancements
 
-const package = require('./package.json')
+var package = require('./package.json')
+var devDeps = Object.keys(package.devDependencies || {})
+var rules = Object.keys(config.rules)
 
-if ( 'babel-eslint' in package.devDependencies ) {
+if ( devDeps.indexOf('babel-eslint') !== -1 ) {
 	config.parser = 'babel-eslint'
 }
 
-if ( 'eslint-plugin-react' in package.devDependencies ) {
+if ( devDeps.indexOf('eslint-plugin-react') !== -1 ) {
 	config.extends.push('plugin:react/recommended')
 	config.plugins.push('react')
 }
 
-if ( 'eslint-plugin-babel' in package.devDependencies ) {
+if ( devDeps.indexOf('eslint-plugin-babel') !== -1 ) {
 	config.plugins.push('babel')
-	const replacements = [
+	var replacements = [
 		'array-bracket-spacing',
 		'new-cap',
 		'object-curly-spacing',
@@ -773,25 +779,25 @@ if ( 'eslint-plugin-babel' in package.devDependencies ) {
 		'object-shorthand'
 	]
 	replacements.forEach(function (key) {
-		if ( key in config.rules ) {
+		if ( rules.indexOf(key) !== -1 ) {
 			config.rules['babel/' + key] = config.rules[key]
 			config.rules[key] = IGNORE
 		}
 	})
 }
 else {
-	Object.keys(config.rules).forEach(function (key) {
+	rules.forEach(function (key) {
 		if ( key.indexOf('babel/') === 0 ) {
 			delete config.rules[key]
 		}
 	})
 }
 
-if ( 'eslint-plugin-flow-vars' in package.devDependencies ) {
+if ( devDeps.indexOf('eslint-plugin-flow-vars') !== -1 ) {
 	config.plugins.push('flow-vars')
 }
 else {
-	Object.keys(config.rules).forEach(function (key) {
+	rules.forEach(function (key) {
 		if ( key.indexOf('flow-vars/') === 0 ) {
 			delete config.rules[key]
 		}

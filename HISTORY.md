@@ -1,5 +1,8 @@
 # History
 
+## v1.1.2 2016 June 16
+- Parent errors are now displayed in a more sensible way
+
 ## v1.1.1 2016 March 20
 - Errors and debug messages are now more useful
   - Closes https://github.com/bevry/editions/issues/5
