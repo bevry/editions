@@ -51,10 +51,7 @@
   "bugs": {
     "url": "https://github.com/bevry/editions/issues"
   },
-  "repository": {
-    "type": "git",
-    "url": "http://github.com/bevry/editions.git"
-  },
+  "repository": "bevry/editions",
   "engines": {
     "node": ">=0.10"
   },
