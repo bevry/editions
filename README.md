@@ -33,7 +33,9 @@ Publish multiple editions for your JavaScript packages consistently and easily (
 
 ## Discover
 
-[Discover what the fuss is about!](https://github.com/bevry/editions/wiki)
+[Watch the talk.](https://youtu.be/IAB8_UlcNWI)
+
+[Get started with the guides and explanations.](https://github.com/bevry/editions/wiki)
 
 [View the API documentation.](http://rawgit.com/bevry/editions/master/docs/index.html)
 
