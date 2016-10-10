@@ -12,7 +12,16 @@ class NestedError extends Error {
 }
 
 // Cache of which syntax combinations are supported or unsupported, hash of booleans
-const syntaxFailures = {}
+const EARLIST_V8_MAJOR_VERSION_THAT_SUPPORTS_ESNEXT = 4
+const syntaxFailedCombitions = {}  // sorted lowercase syntax combination => Error instance of failure
+const syntaxSupport = {
+	esnext: (process && process.versions && process.versions.v8)
+		? (parseInt(process.versions.v8.split('.')[0], 10) >= EARLIST_V8_MAJOR_VERSION_THAT_SUPPORTS_ESNEXT)
+		: null,
+	import: false,
+	coffeescript: false,
+	typescript: false
+}
 
 /**
  * Cycle through the editions for a package and require the correct one
@@ -58,15 +67,24 @@ module.exports.requirePackage = function requirePackage (cwd /* :string */, _req
 		// Get the correct entry path
 		const entryPath = customEntry ? pathUtil.resolve(cwd, directory, customEntry) : pathUtil.resolve(cwd, entry)
 
+		// Check syntax support
 		// Convert syntaxes into a sorted lowercase string
-		const s = syntaxes && syntaxes.map((i) => i.toLowerCase()).sort().join(', ')
-
-		// Is this syntax combination unsupported? If so skip it with a soft failure to try the next edition
-		if ( s && syntaxFailures[s] ) {
-			const syntaxFailure = syntaxFailures[s]
-			lastEditionFailure = new NestedError(`Skipped package [${name}] edition at [${entryPath}] with blacklisted syntax [${s}]`, syntaxFailure)
-			if ( debug )  console.error(`DEBUG: ${lastEditionFailure.stack}`)
-			continue
+		const syntaxCombination = syntaxes && syntaxes.map((i) => i.toLowerCase()).sort().join(', ')
+		if ( syntaxCombination ) {
+			// Check if any of the syntaxes are unsupported
+			const unsupportedSyntaxes = syntaxes.filter((i) => syntaxSupport[i.toLowerCase()] === false)
+			if ( unsupportedSyntaxes.length ) {
+				lastEditionFailure = new Error(`Skipped package [${name}] edition at [${entryPath}] with unsupported syntaxes [${unsupportedSyntaxes}]`)
+				if ( debug )  console.error(`DEBUG: ${lastEditionFailure.stack}`)
+				continue
+			}
+			// Is this syntax combination unsupported? If so skip it with a soft failure to try the next edition
+			else if ( syntaxFailedCombitions[syntaxCombination] ) {
+				const syntaxFailure = syntaxFailedCombitions[syntaxCombination]
+				lastEditionFailure = new NestedError(`Skipped package [${name}] edition at [${entryPath}] with blacklisted syntax combination [${syntaxCombination}]`, syntaxFailure)
+				if ( debug )  console.error(`DEBUG: ${lastEditionFailure.stack}`)
+				continue
+			}
 		}
 
 		// Try and load this syntax combination
@@ -75,12 +93,12 @@ module.exports.requirePackage = function requirePackage (cwd /* :string */, _req
 		}
 		catch ( error ) {
 			// Note the error with more details
-			lastEditionFailure = new NestedError(`Unable to load package [${name}] edition at [${entryPath}] with syntax [${s || 'no syntaxes specified'}]`, error)
+			lastEditionFailure = new NestedError(`Unable to load package [${name}] edition at [${entryPath}] with syntax [${syntaxCombination || 'no syntaxes specified'}]`, error)
 			if ( debug )  console.error(`DEBUG: ${lastEditionFailure.stack}`)
 
 			// Blacklist the combination, even if it may have worked before
 			// Perhaps in the future note if that if it did work previously, then we should instruct module owners to be more specific with their syntaxes
-			if ( s )  syntaxFailures[s] = lastEditionFailure
+			if ( syntaxCombination )  syntaxFailedCombitions[syntaxCombination] = lastEditionFailure
 		}
 	}
 

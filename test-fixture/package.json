@@ -1,0 +1,24 @@
+{
+  "name": "editions-test-fixture",
+  "version": "1.0.0",
+  "editions": [
+    {
+      "description": "ESNext + Require",
+      "entry": "esnext/index.js",
+      "syntaxes": [
+        "javascript",
+        "esnext",
+        "arrows"
+      ]
+    },
+    {
+      "description": "ES5 + Require",
+      "entry": "es5/index.js",
+      "syntaxes": [
+        "javascript",
+        "es5",
+        "require"
+      ]
+    }
+  ]
+}
