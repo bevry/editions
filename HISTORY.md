@@ -1,9 +1,12 @@
 # History
 
+## v1.2.1 2016 October 10
+- Change `esnext` skip from v8 engines < 4 to node engines < 0.12
+
 ## v1.2.0 2016 October 10
 - Skip syntaxes that require preprocessors
 - Skip `import` syntax, as the `module` field inside `package.json` skips the autoloader if supported
-- Skip `esnext` syntax on v8 engines <= 4 as esnext is unsupported in those environments
+- Skip `esnext` syntax on v8 engines < 4
 
 ## v1.1.2 2016 June 16
 - Parent errors are now displayed in a more sensible way

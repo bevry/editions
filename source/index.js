@@ -12,12 +12,10 @@ class NestedError extends Error {
 }
 
 // Cache of which syntax combinations are supported or unsupported, hash of booleans
-const EARLIST_V8_MAJOR_VERSION_THAT_SUPPORTS_ESNEXT = 4
+const EARLIST_NODE_VERSION_THAT_SUPPORTS_ESNEXT = 0.12
 const syntaxFailedCombitions = {}  // sorted lowercase syntax combination => Error instance of failure
 const syntaxSupport = {
-	esnext: (process && process.versions && process.versions.v8)
-		? (parseInt(process.versions.v8.split('.')[0], 10) >= EARLIST_V8_MAJOR_VERSION_THAT_SUPPORTS_ESNEXT)
-		: null,
+	esnext: (process && process.versions && process.versions.node && Number(process.versions.node.split('.').slice(0, 2).join('.')) < EARLIST_NODE_VERSION_THAT_SUPPORTS_ESNEXT) ? false : null,
 	import: false,
 	coffeescript: false,
 	typescript: false
