@@ -17,7 +17,6 @@ cache:
 
 # Prepare our tests
 # Ensure the project is setup correctly and compiled
-install: "npm install -g npm@3 && rm -Rf ./node_modules && npm install"
 before_script: "npm run-script compile"
 
 # Run our tests
