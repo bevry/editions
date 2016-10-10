@@ -83,7 +83,6 @@
   ],
   "main": "es2015/index.js",
   "scripts": {
-    "setup": "npm install",
     "clean": "rm -Rf ./docs ./es2015",
     "compile": "npm run compile:es2015",
     "compile:es2015": "babel ./source --out-dir ./es2015 --presets es2015",
