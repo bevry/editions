@@ -25,6 +25,26 @@
               
                 
                 <li><a
+                  href='#requireedition'
+                  class="">
+                  requireEdition
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#requireeditions'
+                  class="">
+                  requireEditions
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
                   href='#requirepackage'
                   class="">
                   requirePackage
@@ -47,11 +67,251 @@
 
   
   <div class='clearfix'>
+    <h3 class='fl m0' id='requireedition'>
+      requireEdition
+    </h3>
+    
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/bevry/editions/blob/236da8669caf07a47a7c3c4d808ab12f28dab8bc/source/index.js#L71-L112'>
+      <span>source/index.js</span>
+      </a>
+    
+  </div>
+  
+
+  <p>Cycle through the editions and require the correct one</p>
+
+
+  <div class='pre p1 fill-light mt0'>requireEdition(edition: edition, opts: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): Any</div>
+
+  
+
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>edition</span> <code class='quiet'>(edition)</code> the edition entry
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>opts</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code> the following options
+
+          </div>
+          
+          <table class='mt1 mb2 fixed-table h5 col-12'>
+            <colgroup>
+              <col width='30%' />
+              <col width='70%' />
+            </colgroup>
+            <thead>
+              <tr class='bold fill-light'>
+                <th>Name</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody class='mt1'>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>opts.require</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  </td>
+                  <td class='break-word'><span>the require method of the calling module, used to ensure require paths remain correct
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>opts.cwd</span> <code class='quiet'>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]</code>
+                  </td>
+                  <td class='break-word'><span>if provided, this will be the cwd for entries
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>opts.entry</span> <code class='quiet'>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]</code>
+                  </td>
+                  <td class='break-word'><span>if provided, should be a relative or absolute path to the entry point of the edition
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>opts.name</span> <code class='quiet'>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]</code>
+                  </td>
+                  <td class='break-word'><span>if provided, should be the name of the package that we are loading the editions for
+</span></td>
+                </tr>
+              
+            </tbody>
+          </table>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code>Any</code>:
+        
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    <h3 class='fl m0' id='requireeditions'>
+      requireEditions
+    </h3>
+    
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/bevry/editions/blob/236da8669caf07a47a7c3c4d808ab12f28dab8bc/source/index.js#L125-L150'>
+      <span>source/index.js</span>
+      </a>
+    
+  </div>
+  
+
+  <p>Cycle through the editions and require the correct one</p>
+
+
+  <div class='pre p1 fill-light mt0'>requireEditions(editions: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;edition&gt;, opts: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): Any</div>
+
+  
+
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>editions</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;edition&gt;)</code> an array of edition entries
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>opts</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code> the following options
+
+          </div>
+          
+          <table class='mt1 mb2 fixed-table h5 col-12'>
+            <colgroup>
+              <col width='30%' />
+              <col width='70%' />
+            </colgroup>
+            <thead>
+              <tr class='bold fill-light'>
+                <th>Name</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody class='mt1'>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>opts.require</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  </td>
+                  <td class='break-word'><span>the require method of the calling module, used to ensure require paths remain correct
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>opts.cwd</span> <code class='quiet'>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]</code>
+                  </td>
+                  <td class='break-word'><span>if provided, this will be the cwd for entries
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>opts.entry</span> <code class='quiet'>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]</code>
+                  </td>
+                  <td class='break-word'><span>if provided, should be a relative path to the entry point of the edition
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>opts.name</span> <code class='quiet'>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]</code>
+                  </td>
+                  <td class='break-word'><span>if provided, should be the name of the package that we are loading the editions for
+</span></td>
+                </tr>
+              
+            </tbody>
+          </table>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code>Any</code>:
+        
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
     <h3 class='fl m0' id='requirepackage'>
       requirePackage
     </h3>
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/bevry/editions/blob/818ff7efcb7365534b7268bf3948c0e6e0fbbb8a/source/index.js#L31-L106'>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/bevry/editions/blob/236da8669caf07a47a7c3c4d808ab12f28dab8bc/source/index.js#L159-L164'>
       <span>source/index.js</span>
       </a>
     
@@ -61,7 +321,7 @@
   <p>Cycle through the editions for a package and require the correct one</p>
 
 
-  <div class='pre p1 fill-light mt0'>requirePackage(cwd: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, _require: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">function</a>, customEntry: [<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]): void</div>
+  <div class='pre p1 fill-light mt0'>requirePackage(cwd: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, require: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">function</a>, entry: [<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]): Any</div>
 
   
 
@@ -85,7 +345,7 @@
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>_require</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">function</a>)</code> the require method of the calling module, used to ensure require paths remain correct
+            <span class='code bold'>require</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">function</a>)</code> the require method of the calling module, used to ensure require paths remain correct
 
           </div>
           
@@ -93,7 +353,7 @@
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>customEntry</span> <code class='quiet'>([<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>])</code> an optional override for the entry of an edition, requires the edition to specify a 
+            <span class='code bold'>entry</span> <code class='quiet'>([<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>])</code> an optional override for the entry of an edition, requires the edition to specify a 
 <code>directory</code>
  property
 
@@ -109,7 +369,7 @@
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code>void</code>:
+      <code>Any</code>:
         
       
     

@@ -1,5 +1,10 @@
 # History
 
+## v1.3.0 2016 October 11
+- Added support for `EDITIONS_SYNTAX_BLACKLIST` environment variable
+  - Thanks to [Damon Maria](https://github.com/damonmaria) for [issue #10](https://github.com/bevry/editions/issues/10)
+- Dropped need for `DEBUG_BEVRY_EDITIONS` as failures will not output all the necessary debugging information
+
 ## v1.2.1 2016 October 10
 - Change `esnext` skip from v8 engines < 4 to node engines < 0.12
 

@@ -20,21 +20,6 @@ catch (error) {
 
 // Test
 suite('editions', function (suite, test) {
-	test('load custom entry failure as no directory', function () {
-		try {
-			requirePackage(cwd, require, 'anything.js')
-		}
-		catch (error) {
-			equal(
-				error.message,
-				'The package [editions-test-fixture] has no directory property on its editions which is required when using custom entry point: anything.js',
-				'error message was as expected'
-			)
-			return
-		}
-		throw new Error('custom entry require did not fail when it should have')
-	})
-
 	// this is after custom entry, as the failure with destructors would blacklist the custom entry
 	suite('load default entry', function (suite, test) {
 		const result = (requirePackage(cwd, require) || '').toString()
