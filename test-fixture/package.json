@@ -4,6 +4,7 @@
   "editions": [
     {
       "description": "ESNext + Require",
+      "directory": "esnext",
       "entry": "esnext/index.js",
       "syntaxes": [
         "javascript",
@@ -13,6 +14,7 @@
     },
     {
       "description": "ES5 + Require",
+      "directory": "es5",
       "entry": "es5/index.js",
       "syntaxes": [
         "javascript",

@@ -1,5 +1,9 @@
 # History
 
+## v1.3.1 2016 October 11
+- Fixed failure to load editions that had the edition directory within the edition entry
+  - Thanks to [Jordan Harband](https://github.com/ljharb) for [issue #20](https://github.com/bevry/editions/issues/20)
+
 ## v1.3.0 2016 October 11
 - Added support for `EDITIONS_SYNTAX_BLACKLIST` environment variable
   - Thanks to [Damon Maria](https://github.com/damonmaria) for [issue #10](https://github.com/bevry/editions/issues/10)

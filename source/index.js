@@ -51,7 +51,7 @@ type edition = {
 };
 type options = {
 	cwd?:string,
-	name?:string,
+	package?:string,
 	entry?:string,
 	require:function
 };
@@ -65,7 +65,7 @@ type options = {
  * @param {string} opts.require - the require method of the calling module, used to ensure require paths remain correct
  * @param {string} [opts.cwd] - if provided, this will be the cwd for entries
  * @param {string} [opts.entry] - if provided, should be a relative or absolute path to the entry point of the edition
- * @param {string} [opts.name] - if provided, should be the name of the package that we are loading the editions for
+ * @param {string} [opts.package] - if provided, should be the name of the package that we are loading the editions for
  * @returns {*}
  */
 function requireEdition ( edition /* :edition */, opts /* :options */ ) /* :any */ {
@@ -73,7 +73,22 @@ function requireEdition ( edition /* :edition */, opts /* :options */ ) /* :any 
 	Object.defineProperty(opts, 'require', {value: opts.require, enumerable: false})
 
 	// Get the correct entry path
-	const entryPath = pathUtil.resolve(opts.cwd || '', edition.directory || '', opts.entry || edition.entry || '')
+	// As older versions o
+	const cwd = opts.cwd || ''
+	const dir = edition.directory || ''
+	let entry = opts.entry || edition.entry || ''
+	if ( dir && entry && entry.indexOf(dir + '/') === 0 )  entry = entry.substring(dir.length + 1)
+	// ^ this should not be needed, but as previous versions of editions included the directory inside the entry
+	// it unfortunately is, as such this is a stepping stone for the new format, the new format being
+	// if entry is specified by itself, it is cwd => entry
+	// if entry is specified with a directory, it is cwd => dir => entry
+	// if entry is not specified but dir is, it is cwd => dir
+	// if neither entry nor dir are specified, we have a problem
+	if ( !dir && !entry ) {
+		const editionFailure = new DetailedError('Skipped edition due to no entry or directory being specified:', {edition, cwd, dir, entry})
+		throw editionFailure
+	}
+	const entryPath = pathUtil.resolve(cwd, dir, entry)
 
 	// Check syntax support
 	// Convert syntaxes into a sorted lowercase string
@@ -119,12 +134,12 @@ function requireEdition ( edition /* :edition */, opts /* :options */ ) /* :any 
  * @param {string} opts.require - the require method of the calling module, used to ensure require paths remain correct
  * @param {string} [opts.cwd] - if provided, this will be the cwd for entries
  * @param {string} [opts.entry] - if provided, should be a relative path to the entry point of the edition
- * @param {string} [opts.name] - if provided, should be the name of the package that we are loading the editions for
+ * @param {string} [opts.package] - if provided, should be the name of the package that we are loading the editions for
  * @returns {*}
  */
 function requireEditions ( editions /* :Array<edition> */, opts /* :options */ ) /* :any */ {
 	// Extract
-	if ( opts.name == null )  opts.name = 'runtime package'
+	if ( opts.package == null )  opts.package = 'custom runtime package'
 
 	// Check
 	if ( !editions || editions.length === 0 ) {
@@ -160,7 +175,10 @@ function requirePackage (cwd /* :string */, require /* :function */, entry /* ::
 	// Load the package.json file to fetch `name` for debugging and `editions` for loading
 	const packagePath = pathUtil.resolve(cwd, 'package.json')
 	const {name, editions} = require(packagePath)
-	return requireEditions(editions, {name, cwd, entry, require})
+	const opts /* :options */ = {cwd, require}
+	if ( name )  opts.package = name
+	if ( entry )  opts.entry = entry
+	return requireEditions(editions, opts)
 }
 
 // Exports

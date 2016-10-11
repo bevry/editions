@@ -71,7 +71,7 @@
       requireEdition
     </h3>
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/bevry/editions/blob/e25053920a21ed1b9ff4424eec883244ba939a6f/source/index.js#L71-L112'>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/bevry/editions/blob/1dc81f12c963579c88cec8d6a31b3f9dcdd2c53b/source/index.js#L71-L127'>
       <span>source/index.js</span>
       </a>
     
@@ -81,7 +81,7 @@
   <p>Cycle through the editions and require the correct one</p>
 
 
-  <div class='pre p1 fill-light mt0'>requireEdition(edition: edition, opts: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): Any</div>
+  <div class='pre p1 fill-light mt0'>requireEdition(edition: edition, opts: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): any</div>
 
   
 
@@ -144,7 +144,7 @@
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>opts.name</span> <code class='quiet'>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]</code>
+                  <td class='break-word'><span class='code bold'>opts.package</span> <code class='quiet'>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]</code>
                   </td>
                   <td class='break-word'><span>if provided, should be the name of the package that we are loading the editions for
 </span></td>
@@ -163,8 +163,9 @@
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code>Any</code>:
+      <code>any</code>:
         
+
       
     
   
@@ -191,7 +192,7 @@
       requireEditions
     </h3>
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/bevry/editions/blob/e25053920a21ed1b9ff4424eec883244ba939a6f/source/index.js#L125-L150'>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/bevry/editions/blob/1dc81f12c963579c88cec8d6a31b3f9dcdd2c53b/source/index.js#L140-L165'>
       <span>source/index.js</span>
       </a>
     
@@ -201,7 +202,7 @@
   <p>Cycle through the editions and require the correct one</p>
 
 
-  <div class='pre p1 fill-light mt0'>requireEditions(editions: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;edition&gt;, opts: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): Any</div>
+  <div class='pre p1 fill-light mt0'>requireEditions(editions: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;edition>, opts: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): any</div>
 
   
 
@@ -217,7 +218,7 @@
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>editions</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;edition&gt;)</code> an array of edition entries
+            <span class='code bold'>editions</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;edition>)</code> an array of edition entries
 
           </div>
           
@@ -264,7 +265,7 @@
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>opts.name</span> <code class='quiet'>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]</code>
+                  <td class='break-word'><span class='code bold'>opts.package</span> <code class='quiet'>[<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]</code>
                   </td>
                   <td class='break-word'><span>if provided, should be the name of the package that we are loading the editions for
 </span></td>
@@ -283,8 +284,9 @@
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code>Any</code>:
+      <code>any</code>:
         
+
       
     
   
@@ -311,7 +313,7 @@
       requirePackage
     </h3>
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/bevry/editions/blob/e25053920a21ed1b9ff4424eec883244ba939a6f/source/index.js#L159-L164'>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/bevry/editions/blob/1dc81f12c963579c88cec8d6a31b3f9dcdd2c53b/source/index.js#L174-L182'>
       <span>source/index.js</span>
       </a>
     
@@ -321,7 +323,7 @@
   <p>Cycle through the editions for a package and require the correct one</p>
 
 
-  <div class='pre p1 fill-light mt0'>requirePackage(cwd: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, require: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">function</a>, entry: [<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]): Any</div>
+  <div class='pre p1 fill-light mt0'>requirePackage(cwd: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, require: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">function</a>, entry: [<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>]): any</div>
 
   
 
@@ -369,8 +371,9 @@
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code>Any</code>:
+      <code>any</code>:
         
+
       
     
   
