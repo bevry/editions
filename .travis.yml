@@ -1,4 +1,4 @@
-# 2016 April 27
+# 2016 November 4
 # https://github.com/bevry/base
 
 # Use the latest travis infrastructure
@@ -7,20 +7,49 @@ sudo: false
 # We use node
 language: node_js
 node_js:
-  - "0.10"
-  - "0.12"
-  - "4"
-  - "6"
+  - "0.8"   # legacy
+  - "0.10"  # maintenance
+  - "0.12"  # maintenance
+  - "4"     # lts
+  - "6"     # lts
+  - "7"     # stable
 cache:
   directories:
     - node_modules
 
-# Prepare our tests
-# Ensure the project is setup correctly and compiled
-before_script: "npm run-script compile"
+# Ensure npm is up to date and that dependencies are installed using an LTS node version
+install: |
+  export CURRENT_NPM_VERSION="$(npm --version)"
+  export LATEST_NPM_VERSION="$(npm view npm version)"
+  if test "$CURRENT_NPM_VERSION" != "$LATEST_NPM_VERSION"; then
+    echo "running an old npm version, upgrading"
+    npm instal npm --global --cache-min=Infinity
+  fi
 
-# Run our tests
-script: "npm test"
+  export CURRENT_NODE_VERSION="$(node --version)"
+  export LTS_NODE_VERSIONS="$(nvm ls-remote --lts)"
+  if echo "$LTS_NODE_VERSIONS" | grep "$CURRENT_NODE_VERSION"; then
+    echo "running on a LTS node version, completing setup"
+    npm run our:setup
+  else
+    echo "running on a non-LTS node version, completing setup on a LTS node version"
+    nvm install --lts
+    export LTS_NODE_VERSION="$(node --version)"
+    npm run our:setup
+    nvm use "$TRAVIS_NODE_VERSION"
+  fi
+
+# Ensure compilation and linting occur on an LTS node version
+before_script: |
+  if test "$LTS_NODE_VERSION"; then
+    echo "running on a non-LTS node version, compiling with LTS, skipping linting"
+    nvm use "$LTS_NODE_VERSION"
+    npm run our:compile
+    nvm use "$TRAVIS_NODE_VERSION"
+  else
+    echo "running on a LTS node version, compiling and linting"
+    npm run our:compile && npm run our:verify
+  fi
 
 # Custom notifications
 notifications:

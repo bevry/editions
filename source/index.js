@@ -1,6 +1,6 @@
 /* @flow */
 /* eslint no-console:0 */
-// Editions Loader
+'use strict'
 
 // Imports
 const pathUtil = require('path')

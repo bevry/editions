@@ -1,6 +1,7 @@
 /* @flow */
 /* eslint no-console:0 */
-require('babel-polyfill')  // node 0.10 compat
+'use strict'
+
 process.env.DEBUG_BEVRY_EDITIONS = 'YES'
 const {requirePackage} = require('./index')
 const {suite} = require('joe')
