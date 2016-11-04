@@ -1,5 +1,8 @@
 # History
 
+## v1.3.3 2016 November 4
+- Properly add node 0.8 support
+
 ## v1.3.2 2016 November 4
 - Added node 0.8 support
 
