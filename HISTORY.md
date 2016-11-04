@@ -1,5 +1,8 @@
 # History
 
+## v1.3.2 2016 November 4
+- Added node 0.8 support
+
 ## v1.3.1 2016 October 11
 - Fixed failure to load editions that had the edition directory within the edition entry
   - Thanks to [Jordan Harband](https://github.com/ljharb) for [issue #20](https://github.com/bevry/editions/issues/20)
