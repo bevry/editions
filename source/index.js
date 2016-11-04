@@ -18,7 +18,13 @@ class DetailedError extends Error {
 }
 
 // Always the same
-const EARLIST_NODE_VERSION_THAT_SUPPORTS_ESNEXT = 0.12
+const EARLIEST_ESNEXT_NODE_VERSION = ['0', '12']
+const NODE_VERSION = process && process.versions && process.versions.node && process.versions.node.split('.')
+const ESNEXT_UNSUPPORTED =
+	NODE_VERSION[0] < EARLIEST_ESNEXT_NODE_VERSION[0] || (
+		NODE_VERSION[0] === EARLIEST_ESNEXT_NODE_VERSION[0] &&
+		NODE_VERSION[1] < EARLIEST_ESNEXT_NODE_VERSION[1]
+	)
 
 // Environment fetching
 const blacklist = process && process.env && process.env.EDITIONS_SYNTAX_BLACKLIST && process.env.EDITIONS_SYNTAX_BLACKLIST.split(',')
@@ -29,7 +35,7 @@ const syntaxBlacklist = {}
 syntaxBlacklist.import = new Error('The import syntax is skipped as the module package.json field eliminates the need for autoloader support')
 syntaxBlacklist.coffeescript = new Error('The coffeescript syntax is skipped as we want to use a precompiled edition rather than compiling at runtime')
 syntaxBlacklist.typescript = new Error('The typescript syntax is skipped as we want to use a precompiled edition rather than compiling at runtime')
-if ( process && process.versions && process.versions.node && Number(process.versions.node.split('.').slice(0, 2).join('.')) < EARLIST_NODE_VERSION_THAT_SUPPORTS_ESNEXT ) {
+if ( ESNEXT_UNSUPPORTED ) {
 	syntaxBlacklist.esnext = new Error('The esnext syntax is skipped on early node versions as attempting to use esnext features will output debugging information on these node versions')
 }
 
