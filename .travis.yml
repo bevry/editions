@@ -1,60 +1,31 @@
-# 2016 November 4
-# https://github.com/bevry/base
-
-# Use the latest travis infrastructure
 sudo: false
-
-# We use node
 language: node_js
 node_js:
-  - "0.8"   # legacy
-  - "0.10"  # maintenance
-  - "0.12"  # maintenance
-  - "4"     # lts
-  - "6"     # lts
-  - "7"     # stable
+- '0.8'
+- '0.10'
+- '0.12'
+- '4'
+- '6'
+- '8'
+- '9'
+matrix:
+  fast_finish: true
+  allow_failures:
+  - node_js: '9'
 cache:
   directories:
-    - node_modules
-
-# Ensure npm is up to date and that dependencies are installed using an LTS node version
-install: |
-  export CURRENT_NPM_VERSION="$(npm --version)"
-  export LATEST_NPM_VERSION="$(npm view npm version)"
-  if test "$CURRENT_NPM_VERSION" != "$LATEST_NPM_VERSION"; then
-    echo "running an old npm version, upgrading"
-    npm instal npm --global --cache-min=Infinity
-  fi
-
-  export CURRENT_NODE_VERSION="$(node --version)"
-  export LTS_NODE_VERSIONS="$(nvm ls-remote --lts)"
-  if echo "$LTS_NODE_VERSIONS" | grep "$CURRENT_NODE_VERSION"; then
-    echo "running on a LTS node version, completing setup"
-    npm run our:setup
-  else
-    echo "running on a non-LTS node version, completing setup on a LTS node version"
-    nvm install --lts
-    export LTS_NODE_VERSION="$(node --version)"
-    npm run our:setup
-    nvm use "$TRAVIS_NODE_VERSION"
-  fi
-
-# Ensure compilation and linting occur on an LTS node version
-before_script: |
-  if test "$LTS_NODE_VERSION"; then
-    echo "running on a non-LTS node version, compiling with LTS, skipping linting"
-    nvm use "$LTS_NODE_VERSION"
-    npm run our:compile
-    nvm use "$TRAVIS_NODE_VERSION"
-  else
-    echo "running on a LTS node version, compiling and linting"
-    npm run our:compile && npm run our:verify
-  fi
-
-# Custom notifications
+  - "$HOME/.npm"
+  - "$HOME/.yarn-cache"
+install:
+- eval "$(curl -s https://raw.githubusercontent.com/bevry/awesome-travis/ef794235b7094de5e49fb64e226da032ce135ecd/scripts/node-install.bash)"
+before_script:
+- eval "$(curl -s https://raw.githubusercontent.com/bevry/awesome-travis/ef794235b7094de5e49fb64e226da032ce135ecd/scripts/node-verify.bash)"
+after_success:
+- eval "$(curl -s https://raw.githubusercontent.com/bevry/awesome-travis/ef794235b7094de5e49fb64e226da032ce135ecd/scripts/surge.bash)"
+- eval "$(curl -s https://raw.githubusercontent.com/bevry/awesome-travis/ef794235b7094de5e49fb64e226da032ce135ecd/scripts/node-publish.bash)"
 notifications:
   slack:
-    secure: I0Mx/JnxvsLbVjaHlGOYCQzyvphf9ObhR6YW2EZCFgDzIXxIMT2xjgZUmQJuo1QU3GM1UaUjamg09wFJbi0JkC1sVcz4NuwzlaPLhQh7OnCH8zZnmrFfgW/MKU6kRMWglJ0r3GdjkmQCtgsaB5E4tT2iVPQPl4xh0U/Whx6J7bfChOjz/805onTI/p2R+deW9o9u6s5FwQvPl51k+b+A/7Apgd3wpDBAqjgzfHBCXifUSOJpI4WKqqDMZpbv3dJnzaQezgtusaf3xRnIIxDA9/kePpHisM4FgzOkGu2PqbeDDm1Hi510Zs9aizLwh/swWGt8cQ28FeQfDMNQqoShnMjuWhNKkyx8NQ44CW34Hp3sALnLds8QDD4NG68wmXIgRP8JuD49b8OsOJdgeBj4ujCeDFAGaZ2cDqzdPUAhjlVOI1ehYiKAmwmg1Dr3O2S+P09Ad1eox1fTleEpKP1EIpIlZbYxjGXbr05JsrVa0NXf5/FnSJnCcCU9Dh2Yih1aZg0K3S6Sw7Cnrp+OROItujFRajClc6kTPe7fXmuDj347CopOkI1rWY5gxx1m3sVHn4GWnu+MIFG7D1WDFD2+REpXMDv6a7uw9vkKecHRvCiUQuCO2p3Hc2uKT6sc5Xfs2zk4308wSplLwfupjuj55e8zTcJvR5wdCbGyVDxZhuA=
+    secure: N9OjCxY9lCW4TVt1ZJM8oeHSAlXMDeeicAGnWI1CtQKhcwrpoguvlpsJz5WlPU6wDY8mPuzWAPMY5hTJ3VU6SZt/g23UrAY93QmIk3EwwQdiElc7XT6a3qtio2satU3AbmEujao7o5W13scLdvTWKGXBlyyetS4Lb5fJOBxqwGbZ5tMGmyUQijmrwvUvZxQz9PXND5NLOLG/YPApfsjkw/AxM6RuN72tqSEJOOWDqvPUM4iMWsFtkNNzv4bBvnzNDgKwaRhsbaMRldyq35CpUlFz5MgFy9VaYrYcfp31gfKuoqz2Eft7TEglwkPG9HojUMPovhQXRGv0I8OK87AQNLRNQUNMLC5sxrk5cqvNjQp/jZuRFlYGWMs330UWJru6d3Xy/ljbF0obinoaNOtW/v+5Xjn3HfW1JzraPxMZjy2Sq6Zw/3s+ulGoInqGP1pcv79+K44+p1xTXABkQVwEnZIER/zJ6gmRIXvNH5+xoVUJjhkqud2ilPXS4xVhRvf/bL0SFMtW6exn34qS1BzbE3TRkd9Y0WCSO5GwXfKFq80XKT06uIecyJXohNkD0JqrwZLPcqTVRhzEBcrsYhv+QRrQqKF64/Iv4BIJkJkdHNaRSfTQKCCiz480H8LqnXKxt++TXoc/ANg2QniVsw6QQEScZbPgJVp+ZsdL6UUmqlU=
   email:
     recipients:
-      secure: w3YoZ1KiWMtNahI+3CRVQD/UC1InqKiMKX7cyUYnosTzQCYKJ6n/eLgH3fb5mHvWJO6tevGDuTNQ3cqjYO38OwfvMx1AdiXVHRrQqrnvKsrLDU8RtKfmCv4UbApX2Wco/1NO6REZucawdRaTEvbQDFbwcncTSKdiMOqxLswkZSXJyVVHxnOTom10GQS3CjK3uOhE0DD1f7ldgTlxc5l609H4dM0/y8B1t3u5CdKoaj5YY24b8FxvUBljBBwXOdXV+LD5vKEIFZiwyIBRr21w4mXV66Wl/7I7iyDCz8tjtYxNl1QLWLV0qqSmFI0JgojntiNdxZ21tYqp5U5T2+mWAgbnDem2Dbm6+IZ66k2JuL+AAgEC0ludQd7NAimXSE+Avq+0vIhbCGBD1jOBZIiDE4edSC9pVawq5HBftHnkeMfmK8ED1XHVor0bAUEgcbgXzy48rVIBIZsKk8hj2gG9P6z75SwxhZDx5pniY/Lsmwlg9HNy1Ed9Tk+AsfK7jjNhnRBm3G2urSglTZFcA7RgZvXttsJ0RgFG9PHqy/Q+yl2PO9vbxTYWcE+bxykYYHA5s3QGeFZCTEmH0bi0hGo/DRcgXDjgvP+qq8ojCHWm46s7TULZd5YeAGOlhf4ZSUaRpkDVa7w+bjFMIEnzABBLL7sjED/2497pgaTuu92/arw=
+      secure: mpzLU8a/pSSgIG9vYG6OdePrA3Fy9Jes6plwae2CLv0tQACRgF/YcwPnCkO5xZA75e5WHM5RJBqzp2NYuHNHQcCOWtWXj5m957C8+UlmYlMil4FtjMkx8QLLoRCeiaL9fJKn8/LQyQsZC7xVINauhqHbH6mw+4vNpFZV86dpVn7rmBZ7SSywpsPgHngFyQ63k+k/ggOMEpdKgkvP5xPiw1gqw7h8IP8pUbOBC+fQ4HnA8Mnf7iKO0cvhDU5NSaAXbM2Cw44CxfDV43mFroZAziSRw0WHF1y5DpSNFdf5evzqSpJzM40SKAjpqwYF4M0U+wWnJnAh8Kp8dx2VN+CpOKE+QiO0JdWiYt98m14RBLQ2TixIsvJ6eeYzGGZvccwzg2Xusor5qzPZwfcuYB3U86dhLgipLdcIP3VVnxoukStksumxFBZIL6zmXz4wUbGEpLNV20/gSBcmIeNWN/4mEpVhHmKWR/FkxN/ramhS+oIktyVsBggHsxUSWnlbMJ1FMzQZvQDj3z8GCwLVdLNwqubgr7m+Dc3cS0++OuP+XTudjTiW7s8tBJWSIxVRBl4bMIYJCHZrbMZxI0q/5ZZzBc62n7DVodbM89XpADm+lDh75fUhXy1LaiVL5chh/i8ks0JdhWXMyTGC9ornOQFyk1bXuOsnGf0Y29EHarmZJH8=
