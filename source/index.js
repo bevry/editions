@@ -171,16 +171,23 @@ function requireEditions ( editions /* :Array<edition> */, opts /* :options */ )
 
 /**
  * Cycle through the editions for a package and require the correct one
- * @param {string} cwd - the path of the package, used to load package.json:editions and handle relative edition entry points
+ * @param {string} moduleRequirePath - the path or name of the package, used to load package.json:editions and handle relative edition entry points
  * @param {function} require - the require method of the calling module, used to ensure require paths remain correct
  * @param {string} [entry] - an optional override for the entry of an edition, requires the edition to specify a `directory` property
  * @returns {*}
  */
-function requirePackage (cwd /* :string */, require /* :function */, entry /* :: ?:string */ ) /* :any */ {
+function requirePackage (moduleRequirePath /* :string */, require /* :function */, entry /* :: ?:string */ ) /* :any */ {
+	// Use require.resolve to fetch the resolved package path
+	// Then use dirname on the package path to fetch the module path
+	// We do it this way as just using require.resolve(moduleRequirePath) will go to the entry point for the package
+	// which could be anywhere, and will not just be the module path
+	// whereas, the package.json is always going to be in the module path, so it is safe to do it this way
+	// We use require.resolve instead of pathUtil.resolve so that way we can give it a module name instead
+	const packagePath = require.resolve(pathUtil.join(moduleRequirePath, 'package.json'))
+	const modulePath = pathUtil.dirname(packagePath)
 	// Load the package.json file to fetch `name` for debugging and `editions` for loading
-	const packagePath = pathUtil.resolve(cwd, 'package.json')
 	const {name, editions} = require(packagePath)
-	const opts /* :options */ = {cwd, require}
+	const opts /* :options */ = {require, cwd: modulePath}
 	if ( name )  opts.package = name
 	if ( entry )  opts.entry = entry
 	return requireEditions(editions, opts)
