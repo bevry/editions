@@ -1,5 +1,8 @@
 # History
 
+## v1.3.4 2018 January 31
+- Updated base files
+
 ## v1.3.3 2016 November 4
 - Properly add node 0.8 support
 

@@ -1,6 +1,6 @@
 {
   "name": "editions",
-  "version": "1.3.3",
+  "version": "1.3.4",
   "description": "Publish multiple editions for your JavaScript packages consistently and easily (e.g. source edition, esnext edition, es2015 edition)",
   "homepage": "https://github.com/bevry/editions",
   "license": "MIT",
