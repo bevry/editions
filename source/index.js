@@ -1,190 +1,181 @@
-/* @flow */
 /* eslint no-console:0 */
 'use strict'
 
+/**
+ * @typedef {Object} Edition
+ * @property {string} description
+ * @property {string} directory
+ * @property {string} entry
+ * @property {Array<string>} syntaxes
+ * @property {false|Object.<string, string|boolean>} engines
+ * @public
+ */
+
+/**
+ * @typedef {Object} Options
+ * @property {Function} require - the require method of the calling module, used to ensure require paths remain correct
+ * @property {string} [packagePath] - if provided, this is used for debugging
+ * @property {boolean} [verbose] - if provided, any error loading an edition will be logged. By default, errors are only logged if all editions failed. If not provided, process.env.EDITIONS_VERBOSE is used.
+ * @property {string} [cwd] - if provided, this will be the cwd for entries
+ * @property {string} [entry] - if provided, should be a relative path to the entry point of the edition
+ * @property {string} [package] - if provided, should be the name of the package that we are loading the editions for
+ * @property {stream.Writable} [stderr] - if not provided, will use process.stderr instead. It is the stream that verbose errors are logged to.
+ * @public
+ */
+
 // Imports
 const pathUtil = require('path')
+const semver = require('semver')
+const Errlop = require('errlop')
 
-// Helper class to display nested error in a sensible way
-class DetailedError extends Error {
-	constructor (message /* :string */, details /* :Object */) {
-		Object.keys(details).forEach(function (key) {
-			const data = details[key]
-			const value = require('util').inspect(data.stack || data.message || data)
-			message += `\n${key}: ${value}`
-		})
-		super(message)
-	}
+// Helpers
+function stringify (value) {
+	return typeof value === 'string' ? value : JSON.stringify(value)
 }
 
 // Environment fetching
-const blacklist = process && process.env && process.env.EDITIONS_SYNTAX_BLACKLIST && process.env.EDITIONS_SYNTAX_BLACKLIST.split(',')
+const BLACKLIST = process.env.EDITIONS_SYNTAX_BLACKLIST && process.env.EDITIONS_SYNTAX_BLACKLIST.split(/[, ]+/g)
+const NODE_VERSION = process.versions.node
+const VERBOSE = process.env.EDITIONS_VERBOSE === true || process.env.EDITIONS_VERBOSE === 'yes' || process.env.EDITIONS_VERBOSE === 'true' || false
 
 // Cache of which syntax combinations are supported or unsupported, hash of booleans
-const syntaxFailedCombitions = {}  // sorted lowercase syntax combination => Error instance of failure
 const syntaxBlacklist = {}
-syntaxBlacklist.import = new Error('The import syntax is skipped as the module package.json field eliminates the need for autoloader support')
-syntaxBlacklist.coffeescript = new Error('The coffeescript syntax is skipped as we want to use a precompiled edition rather than compiling at runtime')
-syntaxBlacklist.typescript = new Error('The typescript syntax is skipped as we want to use a precompiled edition rather than compiling at runtime')
-
-// Blacklist non-esnext node versions from esnext
-if ( process && process.versions && process.versions.node ) {
-	const EARLIEST_ESNEXT_NODE_VERSION = [0, 12]
-	const NODE_VERSION = process.versions.node.split('.').map((n) => parseInt(n, 10))
-	const ESNEXT_UNSUPPORTED = NODE_VERSION[0] < EARLIEST_ESNEXT_NODE_VERSION[0] || (
-		NODE_VERSION[0] === EARLIEST_ESNEXT_NODE_VERSION[0] &&
-		NODE_VERSION[1] < EARLIEST_ESNEXT_NODE_VERSION[1]
-	)
-	if ( ESNEXT_UNSUPPORTED )  syntaxBlacklist.esnext = new Error('The esnext syntax is skipped on early node versions as attempting to use esnext features will output debugging information on these node versions')
-}
+if (semver.satisfies(NODE_VERSION, '<0.12')) syntaxBlacklist.esnext = new Error('The esnext syntax is skipped on early node versions as attempting to use esnext features will output debugging information on these node versions')
 
 // Check the environment configuration for a syntax blacklist
-if ( blacklist ) {
-	for ( let i = 0; i < blacklist.length; ++i ) {
-		const syntax = blacklist[i].trim().toLowerCase()
-		syntaxBlacklist[syntax] = new DetailedError('The EDITIONS_SYNTAX_BLACKLIST environment variable has blacklisted an edition syntax:', {syntax, blacklist})
+if (BLACKLIST) {
+	for (let i = 0; i < BLACKLIST.length; ++i) {
+		const syntax = BLACKLIST[i].trim().toLowerCase()
+		syntaxBlacklist[syntax] = new Errlop(`The EDITIONS_SYNTAX_BLACKLIST environment variable blacklisted the syntax [${syntax}]`)
 	}
 }
 
-/* ::
-type edition = {
-	name:number,
-	description?:string,
-	directory?:string,
-	entry?:string,
-	syntaxes?:Array<string>
-};
-type options = {
-	cwd?:string,
-	package?:string,
-	entry?:string,
-	require:function
-};
-*/
-
 /**
- * Cycle through the editions and require the correct one
- * @protected internal function that is untested for public consumption
- * @param {edition} edition - the edition entry
- * @param {Object} opts - the following options
- * @param {string} opts.require - the require method of the calling module, used to ensure require paths remain correct
- * @param {string} [opts.cwd] - if provided, this will be the cwd for entries
- * @param {string} [opts.entry] - if provided, should be a relative or absolute path to the entry point of the edition
- * @param {string} [opts.package] - if provided, should be the name of the package that we are loading the editions for
- * @returns {*}
+ * Attempt to load a specific edition
+ * @param {Edition} edition
+ * @param {Options} opts
+ * @returns {*} the result of the loaded edition
+ * @throws {Error} an error if the edition failed to load
+ * @public
  */
-function requireEdition ( edition /* :edition */, opts /* :options */ ) /* :any */ {
-	// Prevent require from being included in debug logs
-	Object.defineProperty(opts, 'require', {value: opts.require, enumerable: false})
-
-	// Get the correct entry path
-	// As older versions o
-	const cwd = opts.cwd || ''
-	const dir = edition.directory || ''
-	let entry = opts.entry || edition.entry || ''
-	if ( dir && entry && entry.indexOf(dir + '/') === 0 )  entry = entry.substring(dir.length + 1)
-	// ^ this should not be needed, but as previous versions of editions included the directory inside the entry
-	// it unfortunately is, as such this is a stepping stone for the new format, the new format being
-	// if entry is specified by itself, it is cwd => entry
-	// if entry is specified with a directory, it is cwd => dir => entry
-	// if entry is not specified but dir is, it is cwd => dir
-	// if neither entry nor dir are specified, we have a problem
-	if ( !dir && !entry ) {
-		const editionFailure = new DetailedError('Skipped edition due to no entry or directory being specified:', {edition, cwd, dir, entry})
-		throw editionFailure
+function requireEdition (edition, opts) {
+	// Verify the edition is valid
+	if (!edition.description || !edition.directory || !edition.entry || edition.engines == null) {
+		const editionInvalidError = new Errlop(`Each edition must have its [description, directory, entry, engines] fields defined, yet all it had was [${Object.keys(edition).join(', ')}]`)
+		editionInvalidError.level = 'fatal'
+		throw editionInvalidError
 	}
-	const entryPath = pathUtil.resolve(cwd, dir, entry)
 
-	// Check syntax support
+	// Verify engine support
+	if (edition.engines === false) {
+		throw new Errlop(`Skipping edition [${edition.description}] because its engines field was false`)
+	}
+	if (!edition.engines.node) {
+		throw new Errlop(`Skipping edition [${edition.description}] because its .engines.node field was falsey`)
+	}
+	if (edition.engines.node !== true && semver.satisfies(NODE_VERSION, edition.engines.node) === false) {
+		throw new Errlop(`Skipping edition [${edition.description}] because our current node version [${NODE_VERSION}] is not supported by its [${stringify(edition.engines.node)}]`)
+	}
+
+	// Verify syntax support
 	// Convert syntaxes into a sorted lowercase string
 	const syntaxes = edition.syntaxes && edition.syntaxes.map((i) => i.toLowerCase()).sort()
-	const syntaxCombination = syntaxes && syntaxes.join(', ')
-	if ( syntaxes && syntaxCombination ) {
-		// Check if any of the syntaxes are unsupported
-		const unsupportedSyntaxes = syntaxes.filter((i) => syntaxBlacklist[i.toLowerCase()])
-		if ( unsupportedSyntaxes.length ) {
-			const editionFailure = new DetailedError('Skipped edition due to it containing an unsupported syntax:', {edition, unsupportedSyntaxes})
-			throw editionFailure
-		}
-		// Is this syntax combination unsupported? If so skip it with a soft failure to try the next edition
-		else if ( syntaxFailedCombitions[syntaxCombination] ) {
-			const previousCombinationFailure = syntaxFailedCombitions[syntaxCombination]
-			const editionFailure = new DetailedError('Skipped edition due to its syntax combinatiom failing previously:', {edition, previousCombinationFailure})
-			throw editionFailure
+	if (syntaxes) {
+		const unsupportedSyntaxes = syntaxes.filter((i) => syntaxBlacklist[i])
+		if (unsupportedSyntaxes.length) {
+			throw new Errlop(`Skipping edition [${edition.description}] because it contained a blacklisted syntax [${unsupportedSyntaxes.join(', ')}]`)
 		}
 	}
 
-	// Try and load this syntax combination
+	// Load the edition
+	const entry = pathUtil.resolve(opts.cwd || '', edition.directory, opts.entry || edition.entry)
 	try {
-		return opts.require(entryPath)
+		return opts.require(entry)
 	}
-	catch ( error ) {
+	catch (loadError) {
 		// Note the error with more details
-		const editionFailure = new DetailedError('Failed to load the edition due to a load error:', {edition, error: error.stack})
-
-		// Blacklist the combination, even if it may have worked before
-		// Perhaps in the future note if that if it did work previously, then we should instruct module owners to be more specific with their syntaxes
-		if ( syntaxCombination )  syntaxFailedCombitions[syntaxCombination] = editionFailure
-
-		// Continue to the next edition
-		throw editionFailure
+		throw new Errlop(`Skipped edition [${edition.description}] at entry [${entry}] because it failed to load`, loadError)
 	}
 }
 
 /**
- * Cycle through the editions and require the correct one
- * @protected internal function that is untested for public consumption
- * @param {Array<edition>} editions - an array of edition entries
- * @param {Object} opts - the following options
- * @param {string} opts.require - the require method of the calling module, used to ensure require paths remain correct
- * @param {string} [opts.cwd] - if provided, this will be the cwd for entries
- * @param {string} [opts.entry] - if provided, should be a relative path to the entry point of the edition
- * @param {string} [opts.package] - if provided, should be the name of the package that we are loading the editions for
- * @returns {*}
+ * Cycles through a list of editions, returning the first suitable edition that it was able to load
+ * @param {Array<Edition>} editions
+ * @param {Options} opts
+ * @returns {*} the result of the loaded edition
+ * @throws {Error} an error if a suitable edition was unable to be resolved
+ * @public
  */
-function requireEditions ( editions /* :Array<edition> */, opts /* :options */ ) /* :any */ {
-	// Extract
-	if ( opts.package == null )  opts.package = 'custom runtime package'
-
+function requireEditions (editions, opts) {
 	// Check
-	if ( !editions || editions.length === 0 ) {
-		throw new DetailedError('No editions were specified:', {opts})
+	if (!editions || editions.length === 0) {
+		if (opts.packagePath) {
+			throw new Errlop(`There were no editions specified for package [${opts.packagePath}]`)
+		}
+		else {
+			throw new Errlop('There were no editions specified')
+		}
 	}
 
 	// Note the last error message
-	const editionFailures = []
+	let result, editionsError = null, loaded = false
 
 	// Cycle through the editions
-	for ( let i = 0; i < editions.length; ++i ) {
+	for (let i = 0; i < editions.length; ++i) {
 		const edition = editions[i]
 		try {
-			return requireEdition(edition, opts)
+			result = requireEdition(edition, opts)
+			loaded = true
+			break
 		}
-		catch ( err ) {
-			editionFailures.push(err)
+		catch (editionError) {
+			if (editionError.level === 'fatal') {
+				editionsError = editionError
+				break
+			}
+			else if (editionsError) {
+				editionsError = new Errlop(editionsError, editionError)
+			}
+			else {
+				editionsError = editionError
+			}
 		}
 	}
 
-	// Through the error as no edition loaded
-	throw new DetailedError('There are no suitable editions for this environment:', {opts, editions, failures: editionFailures})
+	if (loaded) {
+		const verbose = opts.verbose == null ? VERBOSE : opts.verbose
+		if (editionsError && verbose) {
+			const stderr = opts.stderr || process.stderr
+			stderr.write(editionsError.stack + '\n')
+		}
+		return result
+	}
+	else if (editionsError) {
+		if (opts.packagePath) {
+			throw new Errlop(`There were no suitable editions for package [${opts.packagePath}]`, editionsError)
+		}
+		else {
+			throw new Errlop('There were no suitable editions', editionsError)
+		}
+	}
 }
 
 /**
  * Cycle through the editions for a package and require the correct one
- * @param {string} cwd - the path of the package, used to load package.json:editions and handle relative edition entry points
- * @param {function} require - the require method of the calling module, used to ensure require paths remain correct
- * @param {string} [entry] - an optional override for the entry of an edition, requires the edition to specify a `directory` property
- * @returns {*}
+ * @param {Options.cwd} cwd
+ * @param {Options.require} require
+ * @param {Options.entry} [entry]
+ * @returns {*} the result of the loaded edition
+ * @throws {Error} an error if a suitable edition was unable to be resolved
+ * @public
  */
-function requirePackage (cwd /* :string */, require /* :function */, entry /* :: ?:string */ ) /* :any */ {
+function requirePackage (cwd, require, entry) {
 	// Load the package.json file to fetch `name` for debugging and `editions` for loading
 	const packagePath = pathUtil.resolve(cwd, 'package.json')
-	const {name, editions} = require(packagePath)
-	const opts /* :options */ = {cwd, require}
-	if ( name )  opts.package = name
-	if ( entry )  opts.entry = entry
+	const { editions } = require(packagePath)
+	const opts = { packagePath, cwd, require, entry }
 	return requireEditions(editions, opts)
 }
 
 // Exports
-module.exports = {requireEdition, requireEditions, requirePackage}
+module.exports = { requireEdition, requireEditions, requirePackage }

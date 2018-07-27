@@ -1,7 +1,6 @@
 // 2018 January 26
 // https://github.com/bevry/base
 // http://eslint.org
-// This code must be able to run on Node 0.10
 /* eslint no-warning-comments: 0 */
 'use strict'
 

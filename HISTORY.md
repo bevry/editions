@@ -1,5 +1,11 @@
 # History
 
+## v2.0.0 2018 July 27
+- Edition entries must now make use of the fields: `description`, `directory`, `entry`, and the new `engines` field (which follows the [`package.json:engines` spec](https://docs.npmjs.com/files/package.json#engines)).
+- In version 1, if an edition failed to load, its syntax combination would be blacklisted. This functionality has been removed. The `engines` field is a better replacement. The `syntaxes` field remains optional, as it is still useful for user configured blacklisting and ecosystem tooling.
+- Errors reported by the autoloader have improved readability thanks to [Errlop](https://github.com/bevry/errlop)
+- Updated base files
+
 ## v1.3.4 2018 January 31
 - Updated base files
 
