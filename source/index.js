@@ -38,16 +38,21 @@ const BLACKLIST = process.env.EDITIONS_SYNTAX_BLACKLIST && process.env.EDITIONS_
 const NODE_VERSION = process.versions.node
 const VERBOSE = process.env.EDITIONS_VERBOSE === true || process.env.EDITIONS_VERBOSE === 'yes' || process.env.EDITIONS_VERBOSE === 'true' || false
 
-// Cache of which syntax combinations are supported or unsupported, hash of booleans
-const syntaxBlacklist = {}
-if (semver.satisfies(NODE_VERSION, '<0.12')) syntaxBlacklist.esnext = new Error('The esnext syntax is skipped on early node versions as attempting to use esnext features will output debugging information on these node versions')
+// Cache of which syntax combinations are supported or unsupported
+// Object.<string, Error>
+const blacklist = {}
 
 // Check the environment configuration for a syntax blacklist
 if (BLACKLIST) {
 	for (let i = 0; i < BLACKLIST.length; ++i) {
 		const syntax = BLACKLIST[i].trim().toLowerCase()
-		syntaxBlacklist[syntax] = new Errlop(`The EDITIONS_SYNTAX_BLACKLIST environment variable blacklisted the syntax [${syntax}]`)
+		blacklist[syntax] = new Errlop(`The EDITIONS_SYNTAX_BLACKLIST environment variable blacklisted the syntax [${syntax}]`)
 	}
+}
+
+// Blacklist the syntax 'esnext' if our node version is below 0.12
+if (semver.satisfies(NODE_VERSION, '<0.12')) {
+	blacklist.esnext = new Error('The esnext syntax is skipped on early node versions as attempting to use esnext features will output debugging information on these node versions')
 }
 
 /**
@@ -79,11 +84,12 @@ function requireEdition (edition, opts) {
 
 	// Verify syntax support
 	// Convert syntaxes into a sorted lowercase string
-	const syntaxes = edition.syntaxes && edition.syntaxes.map((i) => i.toLowerCase()).sort()
-	if (syntaxes) {
-		const unsupportedSyntaxes = syntaxes.filter((i) => syntaxBlacklist[i])
-		if (unsupportedSyntaxes.length) {
-			throw new Errlop(`Skipping edition [${edition.description}] because it contained a blacklisted syntax [${unsupportedSyntaxes.join(', ')}]`)
+	const syntaxes = (edition.syntaxes && edition.syntaxes.map((i) => i.toLowerCase()).sort()) || []
+	for (let index = 0; index < syntaxes.length; index++) {
+		const syntax = syntaxes[index]
+		const blacklisted = blacklist[syntax]
+		if (blacklisted) {
+			throw new Errlop(`Skipping edition [${edition.description}] because it contained a blacklisted syntax [${syntax}]`, blacklisted)
 		}
 	}
 
