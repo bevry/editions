@@ -82,7 +82,7 @@
   ],
   "main": "edition:node:0.8/index.js",
   "dependencies": {
-    "errlop": "^1.0.0",
+    "errlop": "^1.0.2",
     "semver": "^5.5.0"
   },
   "devDependencies": {
