@@ -135,7 +135,7 @@ const fixtures = [
 				'blacklist'
 			],
 			engines: {
-				node: '>=0.10'
+				node: '>=0.6'
 			}
 		}]
 	},
