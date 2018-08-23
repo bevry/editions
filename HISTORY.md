@@ -1,5 +1,10 @@
 # History
 
+## v2.0.1 2018 August 24
+- Fixed potential `Error: Cannot find module 'editions'` due to `main` pointing to a legacy location (regression in v2.0.0)
+    - Closes [ungit issue #1130](https://github.com/FredrikNoren/ungit/issues/1130) and [getmac issue #39](https://github.com/bevry/getmac/issues/39)
+- Added an edition for browsers
+
 ## v2.0.0 2018 July 27
 - Edition entries must now make use of the fields: `description`, `directory`, `entry`, and the new `engines` field (which follows the [`package.json:engines` spec](https://docs.npmjs.com/files/package.json#engines)).
 - In version 1, if an edition failed to load, its syntax combination would be blacklisted. This functionality has been removed. The `engines` field is a better replacement. The `syntaxes` field remains optional, as it is still useful for user configured blacklisting and ecosystem tooling.

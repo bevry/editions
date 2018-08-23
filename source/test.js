@@ -216,4 +216,7 @@ joe.suite('editions', function (suite, test) {
 			return done()
 		})
 	})
+	test('package.json:main exists', function () {
+		require('../')
+	})
 })
