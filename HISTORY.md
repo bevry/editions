@@ -1,8 +1,17 @@
 # History
 
+## v2.0.2 2018 September 3
+- Fixed `Error: Cannot find module 'editions'` on Windows (caused by edition directories containing `:` which is unsupported on Windows)
+    - Regression in v2.0.0
+    - Closes
+        - [ungit issue #1130](https://github.com/FredrikNoren/ungit/issues/1130)
+        - [getmac issue #39](https://github.com/bevry/getmac/issues/39)
+        - [docpad issue #1088](https://github.com/docpad/docpad/issues/1088)
+        - [bevry thread #240](https://discuss.bevry.me/t/error-cannot-find-module-editions/240)
+
 ## v2.0.1 2018 August 24
-- Fixed potential `Error: Cannot find module 'editions'` due to `main` pointing to a legacy location (regression in v2.0.0)
-    - Closes [ungit issue #1130](https://github.com/FredrikNoren/ungit/issues/1130) and [getmac issue #39](https://github.com/bevry/getmac/issues/39)
+- Fixed potential `Error: Cannot find module 'editions'` (causes by `main` pointing to a legacy location
+    - Regression in v2.0.0
 - Added an edition for browsers
 
 ## v2.0.0 2018 July 27
