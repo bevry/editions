@@ -121,7 +121,7 @@
     "joe-reporter-console": "^2.0.2",
     "jsdoc": "^3.5.5",
     "minami": "^1.2.3",
-    "projectz": "^1.4.0",
+    "projectz": "^1.5.0",
     "surge": "^0.20.1"
   },
   "scripts": {
