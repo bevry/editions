@@ -1,5 +1,17 @@
 # History
 
+## v2.1.0 2018 November 15
+- If none of the editions for a package match the current node version, editions will try to find a compatible package by converting strict version ranges likes `4 || 6 || 8 || 10` to looser ones like `>=4`, and if that fails, then it will attempt to load the last edition for the environment.
+    - This brings editions handling of engines closer in line with how node handles it, which is as a warning/recomendation, rather than a requirement/enforcement.
+    - This has the benefit that edition authors can specify ranges as the specific versions that they have tested the edition against that pass, rather than having to omit that information for runtime compatibility.
+    - As such editions will now automatically select the edition with guaranteed support for the environment, and if there are none with guaranteed support, then editions will select the one is most likely supported, and if there are none that are likely supported, then it will try the last edition, which should be the most compatible edition.
+    - This is timely, as node v11 is now the version most developers use, yet if edition authors specified only LTS releases, then the editions autoloader would reject loading on v11, despite compatibility being likely with the most upper edition.
+    - This behaviour is dictated by the new `strict` option, which omission of a value enables the above behaviour.
+- Change `syntaxes` to `tags`, with backwards compatibility. This applies to edition specifications, as well as for the blacklist environment variable which is now named `EDITIONS_TAG_BLACKLIST`.
+- Added codes to the different types of errors we may produce.
+- Upgraded babel from v6 to v7
+- Documentation has swapped from Documentation.js to JSDoc with the Minami theme.
+
 ## v2.0.2 2018 September 3
 - Fixed `Error: Cannot find module 'editions'` on Windows (caused by edition directories containing `:` which is unsupported on Windows)
     - Regression in v2.0.0

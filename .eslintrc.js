@@ -1,4 +1,4 @@
-// 2018 January 26
+// 2018 November 15
 // https://github.com/bevry/base
 // http://eslint.org
 /* eslint no-warning-comments: 0 */
@@ -811,7 +811,7 @@ const config = {
 
 
 		// --------------------------------------
-		// Plugins
+		// Plugin: Flow
 
 		// Not sure why, but okay
 		'flow-vars/define-flow-type': WARN,
@@ -834,10 +834,12 @@ catch (err) { }
 // Set the parser options depending on our editions
 if (data.editions) {
 	const sourceEdition = data.editions[0]
-	for (let syntaxIndex = 0; syntaxIndex < sourceEdition.syntaxes.length; ++syntaxIndex) {
-		const syntax = sourceEdition.syntaxes[syntaxIndex]
+	const editionTags = (sourceEdition.tags || sourceEdition.syntaxes || [])
+	for (let syntaxIndex = 0; syntaxIndex < editionTags.length; ++syntaxIndex) {
+		const syntax = editionTags[syntaxIndex]
 		if (syntax === 'esnext') {
-			config.parserOptions.ecmaVersion = 8
+			// https://eslint.org/docs/user-guide/configuring#specifying-parser-options
+			config.parserOptions.ecmaVersion = (new Date().getFullYear() + 1)
 			break
 		}
 		else if (syntax.indexOf('es') === 0) {
@@ -845,8 +847,8 @@ if (data.editions) {
 			break
 		}
 	}
-	config.parserOptions.sourceType = sourceEdition.syntaxes.indexOf('import') !== -1 ? 'module' : 'script'
-	config.parserOptions.ecmaFeatures.jsx = sourceEdition.syntaxes.indexOf('jsx') !== -1
+	config.parserOptions.sourceType = editionTags.includes('import') ? 'module' : 'script'
+	config.parserOptions.ecmaFeatures.jsx = editionTags.includes('jsx')
 }
 
 // If editions failed to dtermine the ecmaVersion, try determining it from node, otherwise default to v5
@@ -875,18 +877,23 @@ if (config.parserOptions.ecmaVersion && config.parserOptions.ecmaVersion <= 5) {
 	config.rules['prefer-const'] = IGNORE
 }
 
-// Add babel parsing if installed
-if (devDeps.indexOf('babel-eslint') !== -1) {
+// Custom Parser: TypeScript
+if (devDeps.includes('typescript-eslint-parser')) {
+	config.parser = 'typescript-eslint-parser'
+}
+// Custom Parser: Babel
+else if (devDeps.includes('babel-eslint')) {
 	config.parser = 'babel-eslint'
 }
 
-// Add react linting if installed
-if (devDeps.indexOf('eslint-plugin-react') !== -1) {
+// Plugin: React
+if (devDeps.includes('eslint-plugin-react')) {
 	config.extends.push('plugin:react/recommended')
 	config.plugins.push('react')
 }
 
-if (devDeps.indexOf('eslint-plugin-babel') !== -1) {
+// Plugin: Babel
+if (devDeps.includes('eslint-plugin-babel')) {
 	// Remove rules that babel rules replace
 	config.plugins.push('babel')
 	const replacements = [
@@ -894,7 +901,7 @@ if (devDeps.indexOf('eslint-plugin-babel') !== -1) {
 		'object-curly-spacing'
 	]
 	replacements.forEach(function (key) {
-		if (rules.indexOf(key) !== -1) {
+		if (rules.includes(key)) {
 			config.rules['babel/' + key] = config.rules[key]
 			config.rules[key] = IGNORE
 		}
@@ -909,7 +916,8 @@ else {
 	})
 }
 
-if (devDeps.indexOf('eslint-plugin-flow-vars') !== -1) {
+// Plugin: Flow
+if (devDeps.includes('eslint-plugin-flow-vars')) {
 	// Add flow plugin if installed
 	config.plugins.push('flow-vars')
 }

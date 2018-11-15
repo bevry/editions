@@ -3,14 +3,15 @@
 'use strict'
 
 // Blacklist
-process.env.EDITIONS_SYNTAX_BLACKLIST = 'blacklist'
+process.env.EDITIONS_TAG_BLACKLIST = 'blacklist'
 
 // External
 const joe = require('joe')
 const { equal } = require('assert-helpers')
 
 // Local
-const { requireEditions } = require('./index')
+const { requireEditions } = require('./index.js')
+const { simplifyRange } = require('./util.js')
 function pass () {
 	return 'ok'
 }
@@ -112,8 +113,9 @@ const fixtures = [
 		}]
 	},
 	{
-		test: 'skipped due to unsupported node version',
+		test: 'skipped due to unsupported node version [strict=true]',
 		error: 'current node version',
+		strict: true,
 		editions: [{
 			description: 'value',
 			entry: 'value',
@@ -124,14 +126,27 @@ const fixtures = [
 		}]
 	},
 	{
-		test: 'skipped due to blacklisted syntax',
-		error: 'it contained a blacklisted syntax',
+		test: 'skipped due to unsupported node version',
+		error: 'it failed to load',
+		require: fail,
+		editions: [{
+			description: 'value',
+			entry: 'value',
+			directory: 'value',
+			engines: {
+				node: '0.6'
+			}
+		}]
+	},
+	{
+		test: 'skipped due to blacklisted tag',
+		error: 'it contained a blacklisted tag',
 		blacklist: ['blacklist'],
 		editions: [{
 			description: 'value',
 			entry: 'value',
 			directory: 'value',
-			syntaxes: [
+			tags: [
 				'blacklist'
 			],
 			engines: {
@@ -191,32 +206,58 @@ const fixtures = [
 
 // Test
 joe.suite('editions', function (suite, test) {
-	fixtures.forEach(function (fixture) {
-		test(fixture.test, function (done) {
-			try {
-				const opts = { require: fixture.require, verbose: true, stderr: new PassThrough() }
-				const result = requireEditions(fixture.editions, opts)
-				equal(result, fixture.result, 'result was as expected')
-				if (fixture.stderr) {
-					const expected = opts.stderr.data.indexOf(fixture.stderr) !== -1
-					if (!expected) {
-						throw new Error('stderr was not as expected: ' + opts.stderr.data)
-					}
-				}
-			}
-			catch (err) {
-				if (fixture.error) {
-					const expected = err.stack.toString().indexOf(fixture.error) !== -1
-					if (expected) {
-						return done()
-					}
-				}
-				return done(err)
-			}
-			return done()
-		})
+	test('simplifyRange', function () {
+		equal(
+			simplifyRange('4 || 6'),
+			'>=4'
+		)
+		equal(
+			simplifyRange('4'),
+			'>=4'
+		)
+		equal(
+			simplifyRange('4.0.0'),
+			'>=4.0.0'
+		)
+		equal(
+			simplifyRange('4.0.0-beta'),
+			'>=4.0.0-beta'
+		)
+		equal(
+			simplifyRange('4.0.0-beta || 5.0.0-beta'),
+			'>=4.0.0-beta'
+		)
 	})
-	test('package.json:main exists', function () {
-		require('../')
+	suite('requireEditions', function (suite, test) {
+		fixtures.forEach(function (fixture) {
+			test(fixture.test, function (done) {
+				try {
+					const opts = {
+						strict: fixture.strict,
+						require: fixture.require,
+						verbose: true,
+						stderr: new PassThrough()
+					}
+					const result = requireEditions(fixture.editions, opts)
+					equal(result, fixture.result, 'result was as expected')
+					if (fixture.stderr) {
+						const expected = opts.stderr.data.indexOf(fixture.stderr) !== -1
+						if (!expected) {
+							throw new Error('stderr was not as expected: ' + opts.stderr.data)
+						}
+					}
+				}
+				catch (err) {
+					if (fixture.error) {
+						const expected = err.stack.toString().indexOf(fixture.error) !== -1
+						if (expected) {
+							return done()
+						}
+					}
+					return done(err)
+				}
+				return done()
+			})
+		})
 	})
 })
