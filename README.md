@@ -38,9 +38,9 @@ Publish multiple editions for your JavaScript packages consistently and easily (
 
 [Watch the talk.](https://youtu.be/IAB8_UlcNWI)
 
-[Get started with the guides and explanations.](https://github.com/bevry/editions/wiki)
+[Read the Documentation.](https://editions.bevry.me)
 
-[View the API documentation.](http://master.editions.bevry.surge.sh/docs/)
+[View the Editions Autoloader API documentation.](http://master.editions.bevry.surge.sh/docs/)
 
 
 <!-- HISTORY/ -->
