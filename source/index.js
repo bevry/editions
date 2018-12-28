@@ -333,8 +333,10 @@ function requireEditions(editions, opts) {
 			} else {
 				editionsError = editionError
 			}
+			// make the fallback edition one that we don't bother loading due to its engines
+			// also: don't assume that .code is accessible, as it may not be, even if it should be, due to the way different environments behave
 			if (
-				editionError.code.indexOf(
+				String(editionError.code || '').indexOf(
 					'unsupported-edition-engines-node-version'
 				) === 0
 			) {
