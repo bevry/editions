@@ -1,5 +1,9 @@
 # History
 
+## v2.1.3 2018 December 28
+
+-   Updated `errlop` dependency, should function to fix [issue #2](https://github.com/bevry/errlop/issues/2)
+
 ## v2.1.2 2018 December 29
 
 Iternal change of not assuming the error `code` property exists, as on certain node versions its existance is denied. This should fix the following error:
