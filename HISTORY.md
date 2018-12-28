@@ -1,5 +1,9 @@
 # History
 
+## v2.1.1 2018 December 29
+
+-   Internal change of requiring a specific [Errlop](https://github.com/bevry/errlop) edition, which should function as a workaround for [errlop#2](https://github.com/bevry/errlop/issues/2)
+
 ## v2.1.0 2018 November 15
 
 -   If none of the editions for a package match the current node version, editions will try to find a compatible package by converting strict version ranges likes `4 || 6 || 8 || 10` to looser ones like `>=4`, and if that fails, then it will attempt to load the last edition for the environment.
