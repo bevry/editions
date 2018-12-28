@@ -14,7 +14,7 @@ const Errlop = require('errlop')
  * @returns {Errlop}
  * @private
  */
-function errtion ({ message, code, level }, parent) {
+function errtion({ message, code, level }, parent) {
 	if (this) throw new Error('errtion is not to be created with new')
 	const error = new Errlop(message, parent)
 	if (code) error.code = code
@@ -28,7 +28,7 @@ function errtion ({ message, code, level }, parent) {
  * @returns {string}
  * @private
  */
-function stringify (value) {
+function stringify(value) {
 	return typeof value === 'string' ? value : JSON.stringify(value)
 }
 
@@ -38,7 +38,7 @@ function stringify (value) {
  * @returns {string}
  * @private
  */
-function simplifyRange (range) {
+function simplifyRange(range) {
 	return range.replace(/^([.\-\w]+)(\s.+)?$/, '>=$1')
 }
 

@@ -7,7 +7,6 @@ const semver = require('semver')
 const Errlop = require('errlop')
 const { errtion, stringify, simplifyRange } = require('./util.js')
 
-
 /**
  * The current node version that we are operating within.
  * It is compared in {@link requireEdition} against {@link Edition.engines}.
@@ -15,7 +14,6 @@ const { errtion, stringify, simplifyRange } = require('./util.js')
  * @private
  */
 const NODE_VERSION = process.versions.node
-
 
 /**
  * Set the environment variable `EDITIONS_VERBOSE` to output debugging information to stderr on how editions selected the edition it did.
@@ -29,8 +27,11 @@ const NODE_VERSION = process.versions.node
  * @type {bollean}
  * @private
  */
-const VERBOSE = process.env.EDITIONS_VERBOSE === true || process.env.EDITIONS_VERBOSE === 'yes' || process.env.EDITIONS_VERBOSE === 'true' || false
-
+const VERBOSE =
+	process.env.EDITIONS_VERBOSE === true ||
+	process.env.EDITIONS_VERBOSE === 'yes' ||
+	process.env.EDITIONS_VERBOSE === 'true' ||
+	false
 
 /**
  * Set the environment variable `EDITIONS_TAG_BLACKLIST` to the tags you wish to blacklist, and editions will skip editions that contain them.
@@ -48,8 +49,10 @@ const VERBOSE = process.env.EDITIONS_VERBOSE === true || process.env.EDITIONS_VE
  * @private
  */
 const BLACKLIST =
-	(process.env.EDITIONS_TAG_BLACKLIST && process.env.EDITIONS_TAG_BLACKLIST.split(/[, ]+/g))
-	|| (process.env.EDITIONS_SYNTAX_BLACKLIST && process.env.EDITIONS_SYNTAX_BLACKLIST.split(/[, ]+/g))
+	(process.env.EDITIONS_TAG_BLACKLIST &&
+		process.env.EDITIONS_TAG_BLACKLIST.split(/[, ]+/g)) ||
+	(process.env.EDITIONS_SYNTAX_BLACKLIST &&
+		process.env.EDITIONS_SYNTAX_BLACKLIST.split(/[, ]+/g))
 
 /**
  * A mapping of blacklisted tags to their reasons.
@@ -60,7 +63,6 @@ const BLACKLIST =
  * @private
  */
 const blacklist = {}
-
 
 /**
  * Edition entries must conform to the following specification.
@@ -113,7 +115,9 @@ if (BLACKLIST) {
 
 // Blacklist the tag 'esnext' if our node version is below 0.12
 if (semver.satisfies(NODE_VERSION, '<0.12')) {
-	blacklist.esnext = new Error('The esnext tag is skipped on early node versions as attempting to use esnext features will output debugging information on these node versions')
+	blacklist.esnext = new Error(
+		'The esnext tag is skipped on early node versions as attempting to use esnext features will output debugging information on these node versions'
+	)
 }
 
 /**
@@ -124,23 +128,33 @@ if (semver.satisfies(NODE_VERSION, '<0.12')) {
  * @throws {Error} An error if the edition failed to load.
  * @public
  */
-function loadEdition (edition, opts) {
-	const entry = pathUtil.resolve(opts.cwd || '', edition.directory, opts.entry || edition.entry)
+function loadEdition(edition, opts) {
+	const entry = pathUtil.resolve(
+		opts.cwd || '',
+		edition.directory,
+		opts.entry || edition.entry
+	)
 	if (opts.require == null) {
 		throw errtion({
-			message: `Skipped edition [${edition.description}] as opts.require was not provided, this is probably due to a testing misconfiguration.`,
+			message: `Skipped edition [${
+				edition.description
+			}] as opts.require was not provided, this is probably due to a testing misconfiguration.`,
 			code: 'unsupported-edition-require'
 		})
 	}
 	try {
 		return opts.require(entry)
-	}
-	catch (loadError) {
+	} catch (loadError) {
 		// Note the error with more details
-		throw errtion({
-			message: `Skipped edition [${edition.description}] at entry [${entry}] because it failed to load`,
-			code: 'unsupported-edition-tried'
-		}, loadError)
+		throw errtion(
+			{
+				message: `Skipped edition [${
+					edition.description
+				}] at entry [${entry}] because it failed to load`,
+				code: 'unsupported-edition-tried'
+			},
+			loadError
+		)
 	}
 }
 
@@ -153,11 +167,18 @@ function loadEdition (edition, opts) {
  * @throws {Error} an error if the edition failed to load
  * @public
  */
-function requireEdition (edition, opts) {
+function requireEdition(edition, opts) {
 	// Verify the edition is valid
-	if (!edition.description || !edition.directory || !edition.entry || edition.engines == null) {
+	if (
+		!edition.description ||
+		!edition.directory ||
+		!edition.entry ||
+		edition.engines == null
+	) {
 		throw errtion({
-			message: `Each edition must have its [description, directory, entry, engines] fields defined, yet all it had was [${Object.keys(edition).join(', ')}]`,
+			message: `Each edition must have its [description, directory, entry, engines] fields defined, yet all it had was [${Object.keys(
+				edition
+			).join(', ')}]`,
 			code: 'unsupported-edition-malformed',
 			level: 'fatal'
 		})
@@ -167,60 +188,76 @@ function requireEdition (edition, opts) {
 	if (opts.strict == null) {
 		try {
 			return requireEdition(edition, { ...opts, strict: true })
-		}
-		catch (err) {
+		} catch (err) {
 			return requireEdition(edition, { ...opts, strict: false })
 		}
 	}
 
 	// Verify tag support
 	// Convert tags into a sorted lowercase string
-	const tags = (edition.tags || edition.syntaxes || []).map(
-		(i) => i.toLowerCase()
-	).sort()
+	const tags = (edition.tags || edition.syntaxes || [])
+		.map(i => i.toLowerCase())
+		.sort()
 	for (let index = 0; index < tags.length; index++) {
 		const tag = tags[index]
 		const blacklisted = blacklist[tag]
 		if (blacklisted) {
-			throw errtion({
-				message: `Skipping edition [${edition.description}] because it contained a blacklisted tag [${tag}]`,
-				code: 'unsupported-edition-backlisted-tag'
-			}, blacklisted)
+			throw errtion(
+				{
+					message: `Skipping edition [${
+						edition.description
+					}] because it contained a blacklisted tag [${tag}]`,
+					code: 'unsupported-edition-backlisted-tag'
+				},
+				blacklisted
+			)
 		}
 	}
 
 	// Verify engine support
 	if (edition.engines === false) {
 		throw errtion({
-			message: `Skipping edition [${edition.description}] because its engines field was false`,
+			message: `Skipping edition [${
+				edition.description
+			}] because its engines field was false`,
 			code: 'unsupported-edition-engine'
 		})
 	}
 	if (!edition.engines.node) {
 		throw errtion({
-			message: `Skipping edition [${edition.description}] because its .engines.node field was falsey`,
+			message: `Skipping edition [${
+				edition.description
+			}] because its .engines.node field was falsey`,
 			code: 'unsupported-edition-engines-node'
 		})
 	}
 	if (opts.strict) {
 		if (edition.engines.node === true) {
 			throw errtion({
-				message: `Skipping edition [${edition.description}] because its .engines.node field was true yet we are in strict mode`,
+				message: `Skipping edition [${
+					edition.description
+				}] because its .engines.node field was true yet we are in strict mode`,
 				code: 'unsupported-edition-engines-node-version-true'
 			})
-		}
-		else if (semver.satisfies(NODE_VERSION, edition.engines.node) === false) {
+		} else if (semver.satisfies(NODE_VERSION, edition.engines.node) === false) {
 			throw errtion({
-				message: `Skipping edition [${edition.description}] because our current node version [${NODE_VERSION}] is not supported by its specific range [${stringify(edition.engines.node)}]`,
+				message: `Skipping edition [${
+					edition.description
+				}] because our current node version [${NODE_VERSION}] is not supported by its specific range [${stringify(
+					edition.engines.node
+				)}]`,
 				code: 'unsupported-edition-engines-node-version-specific'
 			})
 		}
-	}
-	else if (edition.engines.node !== true) {
+	} else if (edition.engines.node !== true) {
 		const simplifiedRange = simplifyRange(edition.engines.node)
 		if (semver.satisfies(NODE_VERSION, simplifiedRange) === false) {
 			throw errtion({
-				message: `Skipping edition [${edition.description}] because our current node version [${NODE_VERSION}] is not supported by its simplified range [${stringify(simplifiedRange)}]`,
+				message: `Skipping edition [${
+					edition.description
+				}] because our current node version [${NODE_VERSION}] is not supported by its simplified range [${stringify(
+					simplifiedRange
+				)}]`,
 				code: 'unsupported-edition-engines-node-version-simplified'
 			})
 		}
@@ -240,16 +277,17 @@ function requireEdition (edition, opts) {
  * @throws {Error} An error if a suitable edition was unable to be resolved.
  * @public
  */
-function requireEditions (editions, opts) {
+function requireEditions(editions, opts) {
 	// Check
 	if (!editions || editions.length === 0) {
 		if (opts.packagePath) {
 			throw errtion({
-				message: `There were no editions specified for package [${opts.packagePath}]`,
+				message: `There were no editions specified for package [${
+					opts.packagePath
+				}]`,
 				code: 'unsupported-editions-missing'
 			})
-		}
-		else {
+		} else {
 			throw errtion({
 				message: 'There were no editions specified',
 				code: 'unsupported-editions-missing'
@@ -261,8 +299,7 @@ function requireEditions (editions, opts) {
 	if (opts.strict == null) {
 		try {
 			return requireEditions(editions, { ...opts, strict: true })
-		}
-		catch (err) {
+		} catch (err) {
 			return requireEditions(editions, { ...opts, strict: false })
 		}
 	}
@@ -271,7 +308,10 @@ function requireEditions (editions, opts) {
 	const verbose = opts.verbose == null ? VERBOSE : opts.verbose
 
 	// Capture the load result, the last error, and the fallback option
-	let result, loaded = false, editionsError = null, fallbackEdition = null
+	let result,
+		loaded = false,
+		editionsError = null,
+		fallbackEdition = null
 
 	// Cycle through the editions determing the above
 	for (let i = 0; i < editions.length; ++i) {
@@ -280,19 +320,20 @@ function requireEditions (editions, opts) {
 			result = requireEdition(edition, opts)
 			loaded = true
 			break
-		}
-		catch (editionError) {
+		} catch (editionError) {
 			if (editionError.level === 'fatal') {
 				editionsError = editionError
 				break
-			}
-			else if (editionsError) {
+			} else if (editionsError) {
 				editionsError = errtion(editionsError, editionError)
-			}
-			else {
+			} else {
 				editionsError = editionError
 			}
-			if (editionError.code.indexOf('unsupported-edition-engines-node-version') === 0) {
+			if (
+				editionError.code.indexOf(
+					'unsupported-edition-engines-node-version'
+				) === 0
+			) {
 				fallbackEdition = edition
 			}
 		}
@@ -304,8 +345,7 @@ function requireEditions (editions, opts) {
 		try {
 			result = loadEdition(fallbackEdition, opts)
 			loaded = true
-		}
-		catch (editionError) {
+		} catch (editionError) {
 			editionsError = new Errlop(editionError, editionsError)
 		}
 	}
@@ -322,16 +362,23 @@ function requireEditions (editions, opts) {
 	// otherwise, provide the error
 	else if (editionsError) {
 		if (opts.packagePath) {
-			throw errtion({
-				message: `There were no suitable editions for package [${opts.packagePath}]`,
-				code: 'unsupported-editions-tried'
-			}, editionsError)
-		}
-		else {
-			throw errtion({
-				message: 'There were no suitable editions',
-				code: 'unsupported-editions-tried'
-			}, editionsError)
+			throw errtion(
+				{
+					message: `There were no suitable editions for package [${
+						opts.packagePath
+					}]`,
+					code: 'unsupported-editions-tried'
+				},
+				editionsError
+			)
+		} else {
+			throw errtion(
+				{
+					message: 'There were no suitable editions',
+					code: 'unsupported-editions-tried'
+				},
+				editionsError
+			)
 		}
 	}
 }
@@ -345,7 +392,7 @@ function requireEditions (editions, opts) {
  * @returns {any} The result of the loaded edition.
  * @throws {Error} An error if a suitable edition was unable to be resolved.
  */
-function requirePackage (cwd, require, entry) {
+function requirePackage(cwd, require, entry) {
 	// Load the package.json file to fetch `name` for debugging and `editions` for loading
 	const packagePath = pathUtil.resolve(cwd, 'package.json')
 	const { editions } = require(packagePath)
