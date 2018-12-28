@@ -1,7 +1,9 @@
 'use strict'
 
-// Import
-const Errlop = require('errlop')
+// As Errlop uses Editions, we should use a specific Errlop edition
+// As otherwise, the circular reference may fail on some machines
+// https://github.com/bevry/errlop/issues/2
+const Errlop = require('errlop/edition-node-0.8/index.js')
 
 /**
  * Allow code and level inputs on Errlop.
