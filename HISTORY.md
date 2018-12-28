@@ -1,6 +1,6 @@
 # History
 
-## v2.1.3 2018 December 28
+## v2.1.3 2018 December 29
 
 -   Updated `errlop` dependency, should function to fix [issue #2](https://github.com/bevry/errlop/issues/2)
 
