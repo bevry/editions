@@ -42,7 +42,6 @@ Publish multiple editions for your JavaScript packages consistently and easily (
 
 [View the Editions Autoloader API documentation.](http://master.editions.bevry.surge.sh/docs/)
 
-
 <!-- HISTORY/ -->
 
 <h2>History</h2>
@@ -91,7 +90,8 @@ No sponsors yet! Will you be the first?
 These amazing people have contributed code to this project:
 
 <ul><li><a href="http://balupton.com">Benjamin Lupton</a> — <a href="https://github.com/bevry/editions/commits?author=balupton" title="View the GitHub contributions of Benjamin Lupton on repository bevry/editions">view contributions</a></li>
-<li><a href="http://zdroid.github.io">Zlatan Vasović</a> — <a href="https://github.com/bevry/editions/commits?author=zdroid" title="View the GitHub contributions of Zlatan Vasović on repository bevry/editions">view contributions</a></li></ul>
+<li><a href="http://zdroid.github.io">Zlatan Vasović</a> — <a href="https://github.com/bevry/editions/commits?author=zdroid" title="View the GitHub contributions of Zlatan Vasović on repository bevry/editions">view contributions</a></li>
+<li><a href="http://github.com/apps/dependabot">dependabot[bot]</a> — <a href="https://github.com/bevry/editions/commits?author=dependabot[bot]" title="View the GitHub contributions of dependabot[bot] on repository bevry/editions">view contributions</a></li></ul>
 
 <a href="https://github.com/bevry/editions/blob/master/CONTRIBUTING.md#files">Discover how you can contribute by heading on over to the <code>CONTRIBUTING.md</code> file.</a>
 

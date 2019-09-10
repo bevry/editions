@@ -140,9 +140,7 @@ function loadEdition(edition, opts) {
 	)
 	if (opts.require == null) {
 		throw errtion({
-			message: `Skipped edition [${
-				edition.description
-			}] as opts.require was not provided, this is probably due to a testing misconfiguration.`,
+			message: `Skipped edition [${edition.description}] as opts.require was not provided, this is probably due to a testing misconfiguration.`,
 			code: 'unsupported-edition-require'
 		})
 	}
@@ -152,9 +150,7 @@ function loadEdition(edition, opts) {
 		// Note the error with more details
 		throw errtion(
 			{
-				message: `Skipped edition [${
-					edition.description
-				}] at entry [${entry}] because it failed to load`,
+				message: `Skipped edition [${edition.description}] at entry [${entry}] because it failed to load`,
 				code: 'unsupported-edition-tried'
 			},
 			loadError
@@ -208,9 +204,7 @@ function requireEdition(edition, opts) {
 		if (blacklisted) {
 			throw errtion(
 				{
-					message: `Skipping edition [${
-						edition.description
-					}] because it contained a blacklisted tag [${tag}]`,
+					message: `Skipping edition [${edition.description}] because it contained a blacklisted tag [${tag}]`,
 					code: 'unsupported-edition-backlisted-tag'
 				},
 				blacklisted
@@ -221,26 +215,20 @@ function requireEdition(edition, opts) {
 	// Verify engine support
 	if (edition.engines === false) {
 		throw errtion({
-			message: `Skipping edition [${
-				edition.description
-			}] because its engines field was false`,
+			message: `Skipping edition [${edition.description}] because its engines field was false`,
 			code: 'unsupported-edition-engine'
 		})
 	}
 	if (!edition.engines.node) {
 		throw errtion({
-			message: `Skipping edition [${
-				edition.description
-			}] because its .engines.node field was falsey`,
+			message: `Skipping edition [${edition.description}] because its .engines.node field was falsey`,
 			code: 'unsupported-edition-engines-node'
 		})
 	}
 	if (opts.strict) {
 		if (edition.engines.node === true) {
 			throw errtion({
-				message: `Skipping edition [${
-					edition.description
-				}] because its .engines.node field was true yet we are in strict mode`,
+				message: `Skipping edition [${edition.description}] because its .engines.node field was true yet we are in strict mode`,
 				code: 'unsupported-edition-engines-node-version-true'
 			})
 		} else if (semver.satisfies(NODE_VERSION, edition.engines.node) === false) {
@@ -286,9 +274,7 @@ function requireEditions(editions, opts) {
 	if (!editions || editions.length === 0) {
 		if (opts.packagePath) {
 			throw errtion({
-				message: `There were no editions specified for package [${
-					opts.packagePath
-				}]`,
+				message: `There were no editions specified for package [${opts.packagePath}]`,
 				code: 'unsupported-editions-missing'
 			})
 		} else {
@@ -370,9 +356,7 @@ function requireEditions(editions, opts) {
 		if (opts.packagePath) {
 			throw errtion(
 				{
-					message: `There were no suitable editions for package [${
-						opts.packagePath
-					}]`,
+					message: `There were no suitable editions for package [${opts.packagePath}]`,
 					code: 'unsupported-editions-tried'
 				},
 				editionsError

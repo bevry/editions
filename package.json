@@ -51,7 +51,8 @@
   ],
   "contributors": [
     "Benjamin Lupton <b@lupton.cc> (http://balupton.com)",
-    "Zlatan Vasović <zlatanvasovic@gmail.com> (http://zdroid.github.io)"
+    "Zlatan Vasović <zlatanvasovic@gmail.com> (http://zdroid.github.io)",
+    "dependabot[bot] (http://github.com/apps/dependabot)"
   ],
   "bugs": {
     "url": "https://github.com/bevry/editions/issues"
@@ -74,21 +75,8 @@
         "require"
       ],
       "engines": {
-        "node": "8 || 10 || 11",
+        "node": "8 || 10 || 11 || 12",
         "browsers": false
-      }
-    },
-    {
-      "description": "esnext compiled for browsers with require for modules",
-      "directory": "edition-browsers",
-      "entry": "index.js",
-      "tags": [
-        "javascript",
-        "require"
-      ],
-      "engines": {
-        "node": false,
-        "browsers": "defaults"
       }
     },
     {
@@ -100,39 +88,37 @@
         "require"
       ],
       "engines": {
-        "node": "0.8 || 0.10 || 0.12 || 4 || 6 || 8 || 10 || 11",
+        "node": "0.8 || 0.10 || 0.12 || 4 || 6 || 8 || 10 || 11 || 12",
         "browsers": false
       }
     }
   ],
   "main": "edition-node-0.8/index.js",
-  "browser": "edition-browsers/index.js",
   "dependencies": {
-    "errlop": "^1.1.1",
-    "semver": "^5.6.0"
+    "errlop": "^1.1.2",
+    "semver": "^6.3.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.2.3",
-    "@babel/core": "^7.2.2",
-    "@babel/plugin-proposal-object-rest-spread": "^7.2.0",
-    "@babel/preset-env": "^7.2.3",
-    "assert-helpers": "^4.9.3",
-    "eslint": "^5.11.1",
-    "eslint-config-bevry": "^1.0.2",
-    "eslint-config-prettier": "^3.3.0",
-    "eslint-plugin-prettier": "^3.0.1",
-    "jsdoc": "^3.5.5",
+    "@babel/cli": "^7.6.0",
+    "@babel/core": "^7.6.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.5.5",
+    "@babel/preset-env": "^7.6.0",
+    "assert-helpers": "^4.9.6",
+    "eslint": "^6.3.0",
+    "eslint-config-bevry": "^1.2.1",
+    "eslint-config-prettier": "^6.2.0",
+    "eslint-plugin-prettier": "^3.1.0",
+    "jsdoc": "^3.6.3",
     "kava": "^3.1.0",
     "minami": "^1.2.3",
-    "prettier": "^1.15.3",
-    "projectz": "^1.7.4",
-    "surge": "^0.20.1",
+    "prettier": "^1.18.2",
+    "projectz": "^1.7.5",
+    "surge": "^0.21.3",
     "valid-directory": "^1.0.0"
   },
   "scripts": {
-    "our:clean": "rm -Rf ./docs ./edition* ./es2015 ./es5 ./out",
-    "our:compile": "npm run our:compile:edition-browsers && npm run our:compile:edition-node-0.8",
-    "our:compile:edition-browsers": "env BABEL_ENV=edition-browsers babel --out-dir ./edition-browsers ./source",
+    "our:clean": "rm -Rf ./docs ./edition* ./es2015 ./es5 ./out ./.next",
+    "our:compile": "npm run our:compile:edition-node-0.8",
     "our:compile:edition-node-0.8": "env BABEL_ENV=edition-node-0.8 babel --out-dir ./edition-node-0.8 ./source",
     "our:deploy": "echo no need for this project",
     "our:meta": "npm run our:meta:docs && npm run our:meta:projectz",
@@ -145,12 +131,13 @@
     "our:release:prepare": "npm run our:clean && npm run our:compile && npm run our:test && npm run our:meta",
     "our:release:push": "git push origin master && git push origin --tags",
     "our:release:tag": "export MESSAGE=$(cat ./HISTORY.md | sed -n \"/## v$npm_package_version/,/##/p\" | sed 's/## //' | awk 'NR>1{print buf}{buf = $0}') && test \"$MESSAGE\" || (echo 'proper changelog entry not found' && exit -1) && git tag v$npm_package_version -am \"$MESSAGE\"",
-    "our:setup": "npm run our:setup:npm",
-    "our:setup:npm": "npm install",
+    "our:setup": "npm run our:setup:install",
+    "our:setup:install": "npm install",
     "our:test": "npm run our:verify && npm test",
-    "our:verify": "npm run our:verify:directory && npm run our:verify:eslint",
+    "our:verify": "npm run our:verify:directory && npm run our:verify:eslint && npm run our:verify:prettier",
     "our:verify:directory": "npx valid-directory",
     "our:verify:eslint": "eslint --fix --ignore-pattern '**/*.d.ts' --ignore-pattern '**/vendor/' --ignore-pattern '**/node_modules/' --ext .mjs,.js,.jsx,.ts,.tsx ./source",
+    "our:verify:prettier": "prettier --write ./source/**",
     "test": "node ./edition-node-0.8/test.js"
   },
   "eslintConfig": {
@@ -164,21 +151,6 @@
   },
   "babel": {
     "env": {
-      "edition-browsers": {
-        "sourceType": "script",
-        "presets": [
-          [
-            "@babel/preset-env",
-            {
-              "targets": "defaults",
-              "modules": "commonjs"
-            }
-          ]
-        ],
-        "plugins": [
-          "@babel/proposal-object-rest-spread"
-        ]
-      },
       "edition-node-0.8": {
         "sourceType": "script",
         "presets": [
