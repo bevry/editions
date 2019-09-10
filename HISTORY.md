@@ -1,5 +1,10 @@
 # History
 
+## v2.2.0 2019 September 11
+
+-   Removed the `browser` edition introduced in v2.0.1 as the Editions Autloader has no use in the web browser
+-   Updated dependencies
+
 ## v2.1.3 2018 December 29
 
 -   Updated `errlop` dependency, should function to fix [issue #2](https://github.com/bevry/errlop/issues/2)
