@@ -105,7 +105,7 @@
     "@babel/preset-env": "^7.6.0",
     "assert-helpers": "^4.9.6",
     "eslint": "^6.3.0",
-    "eslint-config-bevry": "^1.2.1",
+    "eslint-config-bevry": "^2.2.0",
     "eslint-config-prettier": "^6.2.0",
     "eslint-plugin-prettier": "^3.1.0",
     "jsdoc": "^3.6.3",
