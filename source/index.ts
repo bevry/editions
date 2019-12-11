@@ -68,22 +68,34 @@ const blacklist: { [tag: string]: Error } = {}
 export interface Edition {
 	/**
 	 * Use this property to decribe the edition in human readable terms. Such as what it does and who it is for. It is used to reference the edition in user facing reporting, such as error messages.
-	 * @example "esnext source code with require for modules"
+	 * @example
+	 * ``` json
+	 * "esnext source code with require for modules"
+	 * ```
 	 */
 	description: String
 	/**
 	 * The location to where this directory is located. It should be a relative path from the `package.json` file.
-	 * @example "source"
+	 * @example
+	 * ``` json
+	 * "source"
+	 * ```
 	 */
 	directory: string
 	/**
 	 * The default entry location for this edition, relative to the edition's directory.
-	 * @example "index.js"
+	 * @example
+	 * ``` json
+	 * "index.js"
+	 * ```
 	 */
 	entry?: string
 	/**
 	 * Any keywords you wish to associate to the edition. Useful for various ecosystem tooling, such as automatic ESNext lint configuration if the `esnext` tag is present in the source edition tags. Consumers also make use of this via {@link EDITIONS_TAG_BLACKLIST} for preventing loading editions that contain a blacklisted tag. Previously this field was named `syntaxes`.
-	 * @example ["javascript", "esnext", "require"]
+	 * @example
+	 * ``` json
+	 * ["javascript", "esnext", "require"]
+	 * ```
 	 */
 	tags?: string[]
 	/**
@@ -94,6 +106,7 @@ export interface Edition {
 	/**
 	 * This field is used to specific which Node.js and Browser environments this edition supports. If `false` this edition does not support either. If `node` is a string, it should be a semver range of node.js versions that the edition targets. If `browsers` is a string, it should be a [browserlist](https://github.com/browserslist/browserslist) value of the specific browser values the edition targets. If `node` or `browsers` is true, it indicates that this edition is compatible with those environments.
 	 * @example
+	 * ``` json
 	 * {
 	 *   "description": "esnext source code with require for modules",
 	 *   "directory": "source",
@@ -108,6 +121,7 @@ export interface Edition {
 	 *     "browsers": "defaults"
 	 *   }
 	 * }
+	 * ```
 	 */
 	engines?: false | { [engine: string]: string | boolean }
 }
