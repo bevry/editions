@@ -86,7 +86,10 @@ export interface Edition {
 	 * @example ["javascript", "esnext", "require"]
 	 */
 	tags?: string[]
-	/** @alias tags */
+	/**
+	 * Alias of {@link Edition['tags']} kept for backwards compatibility with legacy edition definitions
+	 * @ignore
+	 */
 	syntaxes?: Edition['tags']
 	/**
 	 * This field is used to specific which Node.js and Browser environments this edition supports. If `false` this edition does not support either. If `node` is a string, it should be a semver range of node.js versions that the edition targets. If `browsers` is a string, it should be a [browserlist](https://github.com/browserslist/browserslist) value of the specific browser values the edition targets. If `node` or `browsers` is true, it indicates that this edition is compatible with those environments.
