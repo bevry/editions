@@ -1,17 +1,15 @@
-/* @flow */
 /* eslint no-console:0 */
-'use strict'
 
 // Blacklist
 process.env.EDITIONS_TAG_BLACKLIST = 'blacklist'
 
 // External
-const kava = require('kava')
-const { equal } = require('assert-helpers')
+import kava from 'kava'
+import { equal } from 'assert-helpers'
 
 // Local
-const { requireEditions } = require('./index.js')
-const { simplifyRange } = require('./util.js')
+import { Edition, requireEditions } from './index.js'
+import { simplifyRange } from './util.js'
 function pass() {
 	return 'ok'
 }
@@ -19,16 +17,27 @@ function fail() {
 	throw Error('not ok')
 }
 class PassThrough {
+	data: string
 	constructor() {
 		this.data = ''
 	}
-	write(data) {
+	write(data: any) {
 		this.data += data.toString()
 	}
 }
 
 // Fixtures
-const fixtures = [
+interface Fixture {
+	test: string
+	error?: string
+	strict?: boolean
+	require?: Function
+	result?: any
+	stderr?: string
+	blacklist?: string[]
+	editions: null | Array<Edition | {}>
+}
+const fixtures: Fixture[] = [
 	{
 		test: 'missing editions',
 		error: 'no editions specified',
@@ -248,7 +257,10 @@ kava.suite('editions', function(suite, test) {
 						verbose: true,
 						stderr: new PassThrough()
 					}
-					const result = requireEditions(fixture.editions, opts)
+					const result = requireEditions(
+						fixture.editions as Edition[],
+						opts as any
+					)
 					equal(result, fixture.result, 'result was as expected')
 					if (fixture.stderr) {
 						const expected = opts.stderr.data.indexOf(fixture.stderr) !== -1

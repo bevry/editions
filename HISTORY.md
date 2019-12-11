@@ -1,5 +1,10 @@
 # History
 
+## v2.3.0 2019 December 11
+
+-   Rewrote in TypeScript
+-   Updated dependencies, [base files](https://github.com/bevry/base), and [editions](https://editions.bevry.me) using [boundation](https://github.com/bevry/boundation)
+
 ## v2.2.0 2019 September 11
 
 -   Removed the `browser` edition introduced in v2.0.1 as the Editions Autloader has no use in the web browser

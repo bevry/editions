@@ -1,6 +1,6 @@
 {
   "name": "editions",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "Publish multiple editions for your JavaScript packages consistently and easily (e.g. source edition, esnext edition, es2015 edition)",
   "homepage": "https://github.com/bevry/editions",
   "license": "MIT",
@@ -23,11 +23,10 @@
       "daviddm",
       "daviddmdev",
       "---",
+      "githubsponsors",
       "patreon",
       "flattr",
       "liberapay",
-      "thanksapp",
-      "boostlab",
       "buymeacoffee",
       "opencollective",
       "crypto",
@@ -35,6 +34,7 @@
       "wishlist"
     ],
     "config": {
+      "githubSponsorsUsername": "balupton",
       "buymeacoffeeUsername": "balupton",
       "cryptoURL": "https://bevry.me/crypto",
       "flattrUsername": "balupton",
@@ -42,9 +42,11 @@
       "opencollectiveUsername": "bevry",
       "patreonUsername": "bevry",
       "paypalURL": "https://bevry.me/paypal",
-      "wishlistURL": "https://bevry.me/wishlist"
+      "wishlistURL": "https://bevry.me/wishlist",
+      "travisTLD": "com"
     }
   },
+  "funding": "https://bevry.me/fund",
   "author": "2016+ Bevry Pty Ltd <us@bevry.me> (http://bevry.me)",
   "maintainers": [
     "Benjamin Lupton <b@lupton.cc> (http://balupton.com)"
@@ -66,64 +68,60 @@
   },
   "editions": [
     {
-      "description": "esnext source code with require for modules",
+      "description": "typescript source code with import for modules",
       "directory": "source",
-      "entry": "index.js",
+      "entry": "index.ts",
       "tags": [
-        "javascript",
-        "esnext",
-        "require"
+        "typescript",
+        "import"
       ],
-      "engines": {
-        "node": "8 || 10 || 11 || 12",
-        "browsers": false
-      }
+      "engines": false
     },
     {
-      "description": "esnext compiled for node.js 0.8 with require for modules",
-      "directory": "edition-node-0.8",
+      "description": "typescript compiled against ES5 for Node.js with require for modules",
+      "directory": "edition-es5",
       "entry": "index.js",
       "tags": [
         "javascript",
+        "es5",
         "require"
       ],
       "engines": {
-        "node": "0.8 || 0.10 || 0.12 || 4 || 6 || 8 || 10 || 11 || 12",
-        "browsers": false
+        "node": "0.8 || 0.10 || 0.12 || 4 || 6 || 8 || 10 || 12 || 13"
       }
     }
   ],
-  "main": "edition-node-0.8/index.js",
+  "types": "source/index.ts",
+  "type": "commonjs",
+  "main": "edition-es5/index.js",
   "dependencies": {
-    "errlop": "^1.1.2",
+    "errlop": "^2.0.0",
     "semver": "^6.3.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.6.0",
-    "@babel/core": "^7.6.0",
-    "@babel/plugin-proposal-object-rest-spread": "^7.5.5",
-    "@babel/preset-env": "^7.6.0",
-    "assert-helpers": "^4.9.6",
-    "eslint": "^6.3.0",
-    "eslint-config-bevry": "^1.2.1",
-    "eslint-config-prettier": "^6.2.0",
-    "eslint-plugin-prettier": "^3.1.0",
-    "jsdoc": "^3.6.3",
-    "kava": "^3.1.0",
-    "minami": "^1.2.3",
-    "prettier": "^1.18.2",
-    "projectz": "^1.7.5",
+    "@typescript-eslint/eslint-plugin": "^2.11.0",
+    "@typescript-eslint/parser": "^2.11.0",
+    "assert-helpers": "4.10.0",
+    "eslint": "^6.7.2",
+    "eslint-config-bevry": "^2.3.0",
+    "eslint-config-prettier": "^6.7.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "kava": "3.2.0",
+    "prettier": "^1.19.1",
+    "projectz": "^1.16.0",
     "surge": "^0.21.3",
-    "valid-directory": "^1.0.0"
+    "typedoc": "^0.15.4",
+    "typescript": "^3.7.3",
+    "valid-directory": "^1.6.0"
   },
   "scripts": {
     "our:clean": "rm -Rf ./docs ./edition* ./es2015 ./es5 ./out ./.next",
-    "our:compile": "npm run our:compile:edition-node-0.8",
-    "our:compile:edition-node-0.8": "env BABEL_ENV=edition-node-0.8 babel --out-dir ./edition-node-0.8 ./source",
+    "our:compile": "npm run our:compile:edition-es5",
+    "our:compile:edition-es5": "tsc --module commonjs --target ES5 --outDir ./edition-es5 --project tsconfig.json && test -d edition-es5/source && ( mv edition-es5/source edition-temp && rm -Rf edition-es5 && mv edition-temp edition-es5 ) || true",
     "our:deploy": "echo no need for this project",
     "our:meta": "npm run our:meta:docs && npm run our:meta:projectz",
-    "our:meta:docs": "npm run our:meta:docs:jsdoc",
-    "our:meta:docs:jsdoc": "rm -Rf ./docs && jsdoc --recurse --pedantic --access all --destination ./docs --package ./package.json --readme ./README.md --template ./node_modules/minami ./source && mv ./docs/$npm_package_name/$npm_package_version/* ./docs/ && rm -Rf ./docs/$npm_package_name/$npm_package_version",
+    "our:meta:docs": "npm run our:meta:docs:typedoc",
+    "our:meta:docs:typedoc": "rm -Rf ./docs && typedoc --mode file --exclude '**/+(*test*|node_modules)' --excludeExternals --name \"$npm_package_name\" --readme ./README.md --out ./docs ./source",
     "our:meta:projectz": "projectz compile",
     "our:release": "npm run our:release:prepare && npm run our:release:check-changelog && npm run our:release:check-dirty && npm run our:release:tag && npm run our:release:push",
     "our:release:check-changelog": "cat ./HISTORY.md | grep v$npm_package_version || (echo add a changelog entry for v$npm_package_version && exit -1)",
@@ -134,11 +132,12 @@
     "our:setup": "npm run our:setup:install",
     "our:setup:install": "npm install",
     "our:test": "npm run our:verify && npm test",
-    "our:verify": "npm run our:verify:directory && npm run our:verify:eslint && npm run our:verify:prettier",
+    "our:verify": "npm run our:verify:directory && npm run our:verify:eslint && npm run our:verify:prettier && npm run our:verify:typescript",
     "our:verify:directory": "npx valid-directory",
     "our:verify:eslint": "eslint --fix --ignore-pattern '**/*.d.ts' --ignore-pattern '**/vendor/' --ignore-pattern '**/node_modules/' --ext .mjs,.js,.jsx,.ts,.tsx ./source",
     "our:verify:prettier": "prettier --write ./source/**",
-    "test": "node ./edition-node-0.8/test.js"
+    "our:verify:typescript": "tsc --noEmit --project tsconfig.json",
+    "test": "node ./edition-es5/test.js"
   },
   "eslintConfig": {
     "extends": [
@@ -149,25 +148,13 @@
     "semi": false,
     "singleQuote": true
   },
-  "babel": {
-    "env": {
-      "edition-node-0.8": {
-        "sourceType": "script",
-        "presets": [
-          [
-            "@babel/preset-env",
-            {
-              "targets": {
-                "node": "0.8"
-              },
-              "modules": "commonjs"
-            }
-          ]
-        ],
-        "plugins": [
-          "@babel/proposal-object-rest-spread"
-        ]
-      }
-    }
+  "boundation": {
+    "minimumSupportNodeVersion": "0.8",
+    "minimumTestNodeVersion": "0.8",
+    "browser": false,
+    "compiler": "typescript",
+    "targets": [
+      "ES5"
+    ]
   }
 }
