@@ -64,7 +64,26 @@ const BLACKLIST: string[] =
  */
 const blacklist: { [tag: string]: Error } = {}
 
-/** Edition entries must conform to the following specification. */
+/**
+ * Edition entries must conform to the following specification.
+ * @example
+ * ``` json
+ * {
+ *   "description": "esnext source code with require for modules",
+ *   "directory": "source",
+ *   "entry": "index.js",
+ *   "tags": [
+ *     "javascript",
+ *     "esnext",
+ *     "require"
+ *   ],
+ *   "engines": {
+ *     "node": ">=6",
+ *     "browsers": "defaults"
+ *   }
+ * }
+ * ```
+ */
 export interface Edition {
 	/**
 	 * Use this property to decribe the edition in human readable terms. Such as what it does and who it is for. It is used to reference the edition in user facing reporting, such as error messages.
@@ -108,18 +127,8 @@ export interface Edition {
 	 * @example
 	 * ``` json
 	 * {
-	 *   "description": "esnext source code with require for modules",
-	 *   "directory": "source",
-	 *   "entry": "index.js",
-	 *   "tags": [
-	 *     "javascript",
-	 *     "esnext",
-	 *     "require"
-	 *   ],
-	 *   "engines": {
-	 *     "node": ">=6",
-	 *     "browsers": "defaults"
-	 *   }
+	 *   "node": ">=6",
+	 *   "browsers": "defaults"
 	 * }
 	 * ```
 	 */
