@@ -26,7 +26,7 @@ type EDITIONS_VERBOSE = string | boolean | undefined
 
 /**
  * Whether or not {@link EDITIONS_VERBOSE} is enabled.
- * @type {bollean}
+ * @type {boolean}
  * @private
  */
 const VERBOSE: boolean =
