@@ -1,5 +1,12 @@
 # History
 
+## v3.0.0 2020 May 13
+
+-   Support node >= 0.8 but test only against node >= 10
+    -   We are still generating the same code, using ES5 compile target, so support remains the same
+    -   However, testing ecosystem have been upgrading to node >= 10, as such unless all testing packages also function on node >= 0.8, which is possible but highly inconvenient then tests cannot run on such versions
+-   Updated dependencies, [base files](https://github.com/bevry/base), and [editions](https://editions.bevry.me) using [boundation](https://github.com/bevry/boundation)
+
 ## v2.3.0 2019 December 11
 
 -   Rewrote in TypeScript

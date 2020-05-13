@@ -1,6 +1,6 @@
 {
   "name": "editions",
-  "version": "2.3.0",
+  "version": "3.0.0",
   "description": "Publish multiple editions for your JavaScript packages consistently and easily (e.g. source edition, esnext edition, es2015 edition)",
   "homepage": "https://github.com/bevry/editions",
   "license": "MIT",
@@ -100,7 +100,7 @@
   "type": "commonjs",
   "main": "edition-es5/index.js",
   "dependencies": {
-    "errlop": "^2.2.0",
+    "errlop": "^3.0.0",
     "semver": "6.3.0"
   },
   "devDependencies": {
