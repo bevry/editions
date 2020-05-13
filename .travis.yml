@@ -1,27 +1,27 @@
+version: ~> 1.0
 sudo: false
 language: node_js
 node_js:
-- '0.8'
-- '0.10'
-- '0.12'
-- '4'
-- '6'
-- '8'
-- '10'
-- '12'
-- '13'
+  - '10'
+  - '12'
+  - '13'
+  - '14'
 matrix:
   fast_finish: true
   allow_failures: []
 cache: npm
 install:
-- eval "$(curl -fsSL https://raw.githubusercontent.com/bevry/awesome-travis/c91c9d5eef34ecb0e92029667fd5052640225fa3/scripts/node-install.bash)"
+  - >-
+    eval "$(curl -fsSL
+    https://raw.githubusercontent.com/bevry/awesome-travis/0268a1f12d5ebf5e18aa029e4b32ffd432f746a9/scripts/node-install.bash)"
 before_script:
-- eval "$(curl -fsSL https://raw.githubusercontent.com/bevry/awesome-travis/c91c9d5eef34ecb0e92029667fd5052640225fa3/scripts/node-verify.bash)"
+  - >-
+    eval "$(curl -fsSL
+    https://raw.githubusercontent.com/bevry/awesome-travis/0268a1f12d5ebf5e18aa029e4b32ffd432f746a9/scripts/node-verify.bash)"
 after_success:
-- eval "$(curl -fsSL https://raw.githubusercontent.com/bevry/awesome-travis/c91c9d5eef34ecb0e92029667fd5052640225fa3/scripts/surge.bash)"
-- eval "$(curl -fsSL https://raw.githubusercontent.com/bevry/awesome-travis/c91c9d5eef34ecb0e92029667fd5052640225fa3/scripts/node-publish.bash)"
-notifications:
-  email:
-    recipients:
-      secure: jbIUGbbWJ/wfuEmPAKio0eXK9YcoMVgKFgkr69KlBR93QaE+H9QkksdImtQtgvi/AsISI4owEndWKpUHSaCVjpzS1YhDed8Y4sUKP1ZsBDW2u4uRGbragOwocVwUH1l2yw64nUgVKIcJShLJKBNBBZPhGQtKcAmPcVb8d/DwzjxlKvdgPn1BEtGVBq8J19IDXLY5ROtHHBq+6eOvqoUmnXMe056XCVAomUQMUveW7I9Ogl32B0ZhDKiFfVDuvHYf+yUL5eYXPOVHutKEAczTiipIAyc/gEpwLl+FZTqsQvJqAeh3mGxK2QmJy/duOmpSUDIvFI8PVkBCax/5lwIMqlGSF8rV0HQ7kK1lrtYPCh/Zg0ioiWAWUXaqoVsjvE2z6niy3+1ACIRH/k2wMRxTiV9wmyTHzCrqrlchvARTIefk6UVBRUCKbmyJe8jP+tXllNWVgAFILFzsgpZmGogP9FEG+SOTfSVHj9hLb3Pfhs4Ne5OJEU1jqlApvsKI1EcJCT0ql9ssqBr72gOAZjM/YpSJkeQyBz436+sJkIY4G+ujoAvMUlftES2WAWWPpK+6LikrbDR1/0I+osZpsfu/cB5xa4ww5Og4XBGwO/pgih/+995Oo1AjORxvuT22LAzXpdZ2scpEd1pEMHWqhPudBsueG0nDp4UR5kqpiNW8f2Q=
+  - >-
+    eval "$(curl -fsSL
+    https://raw.githubusercontent.com/bevry/awesome-travis/0268a1f12d5ebf5e18aa029e4b32ffd432f746a9/scripts/surge.bash)"
+  - >-
+    eval "$(curl -fsSL
+    https://raw.githubusercontent.com/bevry/awesome-travis/0268a1f12d5ebf5e18aa029e4b32ffd432f746a9/scripts/node-publish.bash)"

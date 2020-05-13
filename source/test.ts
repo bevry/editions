@@ -41,17 +41,17 @@ const fixtures: Fixture[] = [
 	{
 		test: 'missing editions',
 		error: 'no editions specified',
-		editions: null
+		editions: null,
 	},
 	{
 		test: 'missing editions',
 		error: 'no editions specified',
-		editions: []
+		editions: [],
 	},
 	{
 		test: 'missing all fields',
 		error: 'fields defined',
-		editions: [{}]
+		editions: [{}],
 	},
 	{
 		test: 'missing engines',
@@ -60,9 +60,9 @@ const fixtures: Fixture[] = [
 			{
 				description: 'value',
 				directory: 'value',
-				entry: 'value'
-			}
-		]
+				entry: 'value',
+			},
+		],
 	},
 	{
 		test: 'missing entry',
@@ -71,9 +71,9 @@ const fixtures: Fixture[] = [
 			{
 				description: 'value',
 				directory: 'value',
-				engines: false
-			}
-		]
+				engines: false,
+			},
+		],
 	},
 	{
 		test: 'missing directory',
@@ -82,9 +82,9 @@ const fixtures: Fixture[] = [
 			{
 				description: 'value',
 				entry: 'value',
-				engines: false
-			}
-		]
+				engines: false,
+			},
+		],
 	},
 	{
 		test: 'missing description',
@@ -93,9 +93,9 @@ const fixtures: Fixture[] = [
 			{
 				description: 'value',
 				entry: 'value',
-				engines: false
-			}
-		]
+				engines: false,
+			},
+		],
 	},
 	{
 		test: 'skipped due to false engines',
@@ -105,9 +105,9 @@ const fixtures: Fixture[] = [
 				description: 'value',
 				entry: 'value',
 				directory: 'value',
-				engines: false
-			}
-		]
+				engines: false,
+			},
+		],
 	},
 	{
 		test: 'skipped due to falsey engines.node',
@@ -117,9 +117,9 @@ const fixtures: Fixture[] = [
 				description: 'value',
 				entry: 'value',
 				directory: 'value',
-				engines: {}
-			}
-		]
+				engines: {},
+			},
+		],
 	},
 	{
 		test: 'skipped due to falsey engines.node',
@@ -130,10 +130,10 @@ const fixtures: Fixture[] = [
 				entry: 'value',
 				directory: 'value',
 				engines: {
-					node: false
-				}
-			}
-		]
+					node: false,
+				},
+			},
+		],
 	},
 	{
 		test: 'skipped due to unsupported node version [strict=true]',
@@ -145,10 +145,10 @@ const fixtures: Fixture[] = [
 				entry: 'value',
 				directory: 'value',
 				engines: {
-					node: '0.6'
-				}
-			}
-		]
+					node: '0.6',
+				},
+			},
+		],
 	},
 	{
 		test: 'skipped due to unsupported node version',
@@ -160,10 +160,10 @@ const fixtures: Fixture[] = [
 				entry: 'value',
 				directory: 'value',
 				engines: {
-					node: '0.6'
-				}
-			}
-		]
+					node: '0.6',
+				},
+			},
+		],
 	},
 	{
 		test: 'skipped due to blacklisted tag',
@@ -176,10 +176,10 @@ const fixtures: Fixture[] = [
 				directory: 'value',
 				tags: ['blacklist'],
 				engines: {
-					node: '>=0.6'
-				}
-			}
-		]
+					node: '>=0.6',
+				},
+			},
+		],
 	},
 	{
 		test: 'skipped due to error',
@@ -191,10 +191,10 @@ const fixtures: Fixture[] = [
 				entry: 'value',
 				directory: 'value',
 				engines: {
-					node: true
-				}
-			}
-		]
+					node: true,
+				},
+			},
+		],
 	},
 	// pass test cases
 	{
@@ -207,10 +207,10 @@ const fixtures: Fixture[] = [
 				entry: 'value',
 				directory: 'value',
 				engines: {
-					node: true
-				}
-			}
-		]
+					node: true,
+				},
+			},
+		],
 	},
 	{
 		test: 'loaded last edition',
@@ -223,39 +223,39 @@ const fixtures: Fixture[] = [
 				entry: 'value',
 				directory: 'value',
 				engines: {
-					node: '0.6'
-				}
+					node: '0.6',
+				},
 			},
 			{
 				description: 'value',
 				entry: 'value',
 				directory: 'value',
 				engines: {
-					node: process.versions.node
-				}
-			}
-		]
-	}
+					node: process.versions.node,
+				},
+			},
+		],
+	},
 ]
 
 // Test
-kava.suite('editions', function(suite, test) {
-	test('simplifyRange', function() {
+kava.suite('editions', function (suite, test) {
+	test('simplifyRange', function () {
 		equal(simplifyRange('4 || 6'), '>=4')
 		equal(simplifyRange('4'), '>=4')
 		equal(simplifyRange('4.0.0'), '>=4.0.0')
 		equal(simplifyRange('4.0.0-beta'), '>=4.0.0-beta')
 		equal(simplifyRange('4.0.0-beta || 5.0.0-beta'), '>=4.0.0-beta')
 	})
-	suite('requireEditions', function(suite, test) {
-		fixtures.forEach(function(fixture) {
-			test(fixture.test, function(done) {
+	suite('requireEditions', function (suite, test) {
+		fixtures.forEach(function (fixture) {
+			test(fixture.test, function (done) {
 				try {
 					const opts = {
 						strict: fixture.strict,
 						require: fixture.require,
 						verbose: true,
-						stderr: new PassThrough()
+						stderr: new PassThrough(),
 					}
 					const result = requireEditions(
 						fixture.editions as Edition[],

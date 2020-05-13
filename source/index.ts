@@ -161,7 +161,7 @@ if (BLACKLIST) {
 		const tag = BLACKLIST[i].trim().toLowerCase()
 		blacklist[tag] = errtion({
 			message: `The EDITIONS_TAG_BLACKLIST (aka EDITIONS_SYNTAX_BLACKLIST) environment variable blacklisted the tag [${tag}]`,
-			code: 'blacklisted-tag'
+			code: 'blacklisted-tag',
 		})
 	}
 }
@@ -187,7 +187,7 @@ export function loadEdition(edition: Edition, opts: EditionOptions): any {
 	if (opts.require == null) {
 		throw errtion({
 			message: `Skipped edition [${edition.description}] as opts.require was not provided, this is probably due to a testing misconfiguration.`,
-			code: 'unsupported-edition-require'
+			code: 'unsupported-edition-require',
 		})
 	}
 	try {
@@ -197,7 +197,7 @@ export function loadEdition(edition: Edition, opts: EditionOptions): any {
 		throw errtion(
 			{
 				message: `Skipped edition [${edition.description}] at entry [${entry}] because it failed to load`,
-				code: 'unsupported-edition-tried'
+				code: 'unsupported-edition-tried',
 			},
 			loadError
 		)
@@ -223,7 +223,7 @@ export function requireEdition(edition: Edition, opts: EditionOptions): any {
 				edition
 			).join(', ')}]`,
 			code: 'unsupported-edition-malformed',
-			level: 'fatal'
+			level: 'fatal',
 		})
 	}
 
@@ -239,7 +239,7 @@ export function requireEdition(edition: Edition, opts: EditionOptions): any {
 	// Verify tag support
 	// Convert tags into a sorted lowercase string
 	const tags = (edition.tags || edition.syntaxes || [])
-		.map(i => i.toLowerCase())
+		.map((i) => i.toLowerCase())
 		.sort()
 	for (let index = 0; index < tags.length; index++) {
 		const tag = tags[index]
@@ -248,7 +248,7 @@ export function requireEdition(edition: Edition, opts: EditionOptions): any {
 			throw errtion(
 				{
 					message: `Skipping edition [${edition.description}] because it contained a blacklisted tag [${tag}]`,
-					code: 'unsupported-edition-backlisted-tag'
+					code: 'unsupported-edition-backlisted-tag',
 				},
 				blacklisted
 			)
@@ -259,20 +259,20 @@ export function requireEdition(edition: Edition, opts: EditionOptions): any {
 	if (edition.engines === false) {
 		throw errtion({
 			message: `Skipping edition [${edition.description}] because its engines field was false`,
-			code: 'unsupported-edition-engine'
+			code: 'unsupported-edition-engine',
 		})
 	}
 	if (!edition.engines.node) {
 		throw errtion({
 			message: `Skipping edition [${edition.description}] because its .engines.node field was falsey`,
-			code: 'unsupported-edition-engines-node'
+			code: 'unsupported-edition-engines-node',
 		})
 	}
 	if (opts.strict) {
 		if (edition.engines.node === true) {
 			throw errtion({
 				message: `Skipping edition [${edition.description}] because its .engines.node field was true yet we are in strict mode`,
-				code: 'unsupported-edition-engines-node-version-true'
+				code: 'unsupported-edition-engines-node-version-true',
 			})
 		} else if (semver.satisfies(NODE_VERSION, edition.engines.node) === false) {
 			throw errtion({
@@ -281,7 +281,7 @@ export function requireEdition(edition: Edition, opts: EditionOptions): any {
 				}] because our current node version [${NODE_VERSION}] is not supported by its specific range [${stringify(
 					edition.engines.node
 				)}]`,
-				code: 'unsupported-edition-engines-node-version-specific'
+				code: 'unsupported-edition-engines-node-version-specific',
 			})
 		}
 	} else if (edition.engines.node !== true) {
@@ -293,7 +293,7 @@ export function requireEdition(edition: Edition, opts: EditionOptions): any {
 				}] because our current node version [${NODE_VERSION}] is not supported by its simplified range [${stringify(
 					simplifiedRange
 				)}]`,
-				code: 'unsupported-edition-engines-node-version-simplified'
+				code: 'unsupported-edition-engines-node-version-simplified',
 			})
 		}
 	}
@@ -318,12 +318,12 @@ export function requireEditions(
 		if (opts.packagePath) {
 			throw errtion({
 				message: `There were no editions specified for package [${opts.packagePath}]`,
-				code: 'unsupported-editions-missing'
+				code: 'unsupported-editions-missing',
 			})
 		} else {
 			throw errtion({
 				message: 'There were no editions specified',
-				code: 'unsupported-editions-missing'
+				code: 'unsupported-editions-missing',
 			})
 		}
 	}
@@ -400,7 +400,7 @@ export function requireEditions(
 			throw errtion(
 				{
 					message: `There were no suitable editions for package [${opts.packagePath}]`,
-					code: 'unsupported-editions-tried'
+					code: 'unsupported-editions-tried',
 				},
 				editionsError
 			)
@@ -408,7 +408,7 @@ export function requireEditions(
 			throw errtion(
 				{
 					message: 'There were no suitable editions',
-					code: 'unsupported-editions-tried'
+					code: 'unsupported-editions-tried',
 				},
 				editionsError
 			)

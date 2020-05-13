@@ -5,15 +5,17 @@
   "homepage": "https://github.com/bevry/editions",
   "license": "MIT",
   "keywords": [
-    "editions",
     "edition",
-    "versions",
-    "syntaxes",
-    "esnext",
-    "jsnext",
-    "es2015",
+    "editions",
     "es6",
-    "es6+"
+    "es6+",
+    "jsnext",
+    "node",
+    "syntaxes",
+    "typed",
+    "types",
+    "typescript",
+    "versions"
   ],
   "badges": {
     "list": [
@@ -43,18 +45,21 @@
       "patreonUsername": "bevry",
       "paypalURL": "https://bevry.me/paypal",
       "wishlistURL": "https://bevry.me/wishlist",
-      "travisTLD": "com"
+      "travisTLD": "com",
+      "githubUsername": "bevry",
+      "githubRepository": "editions",
+      "githubSlug": "bevry/editions",
+      "npmPackageName": "editions"
     }
   },
   "funding": "https://bevry.me/fund",
   "author": "2016+ Bevry Pty Ltd <us@bevry.me> (http://bevry.me)",
   "maintainers": [
-    "Benjamin Lupton <b@lupton.cc> (http://balupton.com)"
+    "Benjamin Lupton <b@lupton.cc> (https://github.com/balupton)"
   ],
   "contributors": [
-    "Benjamin Lupton <b@lupton.cc> (http://balupton.com)",
-    "Zlatan Vasović <zlatanvasovic@gmail.com> (http://zdroid.github.io)",
-    "dependabot[bot] (http://github.com/apps/dependabot)"
+    "Benjamin Lupton <b@lupton.cc> (https://github.com/balupton)",
+    "Zlatan Vasović <zlatanvasovic@gmail.com> (https://github.com/zdroid)"
   ],
   "bugs": {
     "url": "https://github.com/bevry/editions/issues"
@@ -68,7 +73,7 @@
   },
   "editions": [
     {
-      "description": "typescript source code with import for modules",
+      "description": "TypeScript source code with Import for modules",
       "directory": "source",
       "entry": "index.ts",
       "tags": [
@@ -78,7 +83,7 @@
       "engines": false
     },
     {
-      "description": "typescript compiled against ES5 for Node.js with require for modules",
+      "description": "TypeScript compiled against ES5 for Node.js with Require for modules",
       "directory": "edition-es5",
       "entry": "index.js",
       "tags": [
@@ -87,39 +92,42 @@
         "require"
       ],
       "engines": {
-        "node": "0.8 || 0.10 || 0.12 || 4 || 6 || 8 || 10 || 12 || 13"
+        "node": "10 || 12 || 13 || 14"
       }
     }
   ],
-  "types": "source/index.ts",
+  "types": "./compiled-types/",
   "type": "commonjs",
   "main": "edition-es5/index.js",
   "dependencies": {
-    "errlop": "^2.0.0",
-    "semver": "^6.3.0"
+    "errlop": "^2.2.0",
+    "semver": "6.3.0"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^2.11.0",
-    "@typescript-eslint/parser": "^2.11.0",
-    "assert-helpers": "4.10.0",
-    "eslint": "^6.7.2",
-    "eslint-config-bevry": "^2.3.0",
-    "eslint-config-prettier": "^6.7.0",
-    "eslint-plugin-prettier": "^3.1.1",
-    "kava": "3.2.0",
-    "prettier": "^1.19.1",
-    "projectz": "^1.16.0",
+    "@bevry/update-contributors": "^1.5.0",
+    "@typescript-eslint/eslint-plugin": "^2.33.0",
+    "@typescript-eslint/parser": "^2.33.0",
+    "assert-helpers": "^6.4.0",
+    "eslint": "^7.0.0",
+    "eslint-config-bevry": "^3.4.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.3",
+    "kava": "^5.0.0",
+    "prettier": "^2.0.5",
+    "projectz": "^2.1.0",
     "surge": "^0.21.3",
-    "typedoc": "^0.15.4",
-    "typescript": "^3.7.3",
+    "typedoc": "^0.17.6",
+    "typescript": "^3.9.2",
     "valid-directory": "^1.6.0"
   },
   "scripts": {
     "our:clean": "rm -Rf ./docs ./edition* ./es2015 ./es5 ./out ./.next",
-    "our:compile": "npm run our:compile:edition-es5",
+    "our:compile": "npm run our:compile:edition-es5 && npm run our:compile:types",
     "our:compile:edition-es5": "tsc --module commonjs --target ES5 --outDir ./edition-es5 --project tsconfig.json && test -d edition-es5/source && ( mv edition-es5/source edition-temp && rm -Rf edition-es5 && mv edition-temp edition-es5 ) || true",
+    "our:compile:types": "tsc --project tsconfig.json --emitDeclarationOnly --declaration --declarationDir ./compiled-types/ --declarationMap",
     "our:deploy": "echo no need for this project",
-    "our:meta": "npm run our:meta:docs && npm run our:meta:projectz",
+    "our:meta": "npm run our:meta:contributors && npm run our:meta:docs && npm run our:meta:projectz",
+    "our:meta:contributors": "update-contributors",
     "our:meta:docs": "npm run our:meta:docs:typedoc",
     "our:meta:docs:typedoc": "rm -Rf ./docs && typedoc --mode file --exclude '**/+(*test*|node_modules)' --excludeExternals --name \"$npm_package_name\" --readme ./README.md --out ./docs ./source",
     "our:meta:projectz": "projectz compile",
@@ -132,11 +140,10 @@
     "our:setup": "npm run our:setup:install",
     "our:setup:install": "npm install",
     "our:test": "npm run our:verify && npm test",
-    "our:verify": "npm run our:verify:directory && npm run our:verify:eslint && npm run our:verify:prettier && npm run our:verify:typescript",
-    "our:verify:directory": "npx valid-directory",
+    "our:verify": "npm run our:verify:directory && npm run our:verify:eslint && npm run our:verify:prettier",
+    "our:verify:directory": "valid-directory",
     "our:verify:eslint": "eslint --fix --ignore-pattern '**/*.d.ts' --ignore-pattern '**/vendor/' --ignore-pattern '**/node_modules/' --ext .mjs,.js,.jsx,.ts,.tsx ./source",
-    "our:verify:prettier": "prettier --write ./source/**",
-    "our:verify:typescript": "tsc --noEmit --project tsconfig.json",
+    "our:verify:prettier": "prettier --write .",
     "test": "node ./edition-es5/test.js"
   },
   "eslintConfig": {
@@ -150,11 +157,14 @@
   },
   "boundation": {
     "minimumSupportNodeVersion": "0.8",
-    "minimumTestNodeVersion": "0.8",
+    "minimumTestNodeVersion": "10",
     "browser": false,
     "compiler": "typescript",
     "targets": [
       "ES5"
-    ]
+    ],
+    "versions": {
+      "semver": 6
+    }
   }
 }
