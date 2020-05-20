@@ -1,5 +1,15 @@
 # History
 
+## v2.3.1 2020 May 21
+
+-   Cherry-pick the types compilation from v3 to hopefully fix the consumption error:
+
+    ```
+    node_modules/editions/source/index.ts:6:20 - error TS7016: Could not find a declaration file for module 'semver'. '/Users/balupton/Projects/active/envfile/node_modules/semver/semver.js' implicitly has an 'any' type.
+    Try `npm install @types/semver` if it exists or add a new declaration (.d.ts) file containing `declare module 'semver';`
+    6 import semver from 'semver'
+    ```
+
 ## v2.3.0 2019 December 11
 
 -   Rewrote in TypeScript
@@ -19,11 +29,13 @@
 Iternal change of not assuming the error `code` property exists, as on certain node versions its existance is denied. This should fix the following error:
 
 ```
+
 ./node_modules/editions/edition-node-0.8/index.js:310
-      if (editionError.code.indexOf('unsupported-edition-engines-node-version') === 0) {
-                           ^
+if (editionError.code.indexOf('unsupported-edition-engines-node-version') === 0) {
+^
 
 TypeError: Cannot read property 'indexOf' of undefined
+
 ```
 
 ## v2.1.1 2018 December 29
@@ -31,11 +43,13 @@ TypeError: Cannot read property 'indexOf' of undefined
 Internal change of requiring a specific [Errlop](https://github.com/bevry/errlop) edition, which should function as a workaround for [errlop#2](https://github.com/bevry/errlop/issues/2) to fix the following error:
 
 ```
+
 ./node_modules/errlop/index.js:4
-module.exports = require('editions').requirePackage(__dirname, require)
-                                     ^
+module.exports = require('editions').requirePackage(\_\_dirname, require)
+^
 
 TypeError: require(...).requirePackage is not a function
+
 ```
 
 ## v2.1.0 2018 November 15
@@ -127,3 +141,7 @@ TypeError: require(...).requirePackage is not a function
 ## v1.0.1 2016 March 9
 
 -   Initial release
+
+```
+
+```

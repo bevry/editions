@@ -1,6 +1,6 @@
 {
   "name": "editions",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "Publish multiple editions for your JavaScript packages consistently and easily (e.g. source edition, esnext edition, es2015 edition)",
   "homepage": "https://github.com/bevry/editions",
   "license": "MIT",
@@ -87,11 +87,11 @@
         "require"
       ],
       "engines": {
-        "node": "0.8 || 0.10 || 0.12 || 4 || 6 || 8 || 10 || 12 || 13"
+        "node": "0.8 || 0.10 || 0.12 || 4 || 6 || 8 || 10 || 12 || 13 || 14"
       }
     }
   ],
-  "types": "source/index.ts",
+  "types": "./compiled-types/",
   "type": "commonjs",
   "main": "edition-es5/index.js",
   "dependencies": {
@@ -116,8 +116,9 @@
   },
   "scripts": {
     "our:clean": "rm -Rf ./docs ./edition* ./es2015 ./es5 ./out ./.next",
-    "our:compile": "npm run our:compile:edition-es5",
+    "our:compile": "npm run our:compile:edition-es5 && npm run our:compile:types",
     "our:compile:edition-es5": "tsc --module commonjs --target ES5 --outDir ./edition-es5 --project tsconfig.json && test -d edition-es5/source && ( mv edition-es5/source edition-temp && rm -Rf edition-es5 && mv edition-temp edition-es5 ) || true",
+    "our:compile:types": "tsc --project tsconfig.json --emitDeclarationOnly --declaration --declarationDir ./compiled-types/ --declarationMap",
     "our:deploy": "echo no need for this project",
     "our:meta": "npm run our:meta:docs && npm run our:meta:projectz",
     "our:meta:docs": "npm run our:meta:docs:typedoc",
