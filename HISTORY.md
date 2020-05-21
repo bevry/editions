@@ -1,5 +1,9 @@
 # History
 
+## v3.1.0 2020 May 21
+
+-   Updated dependencies, [base files](https://github.com/bevry/base), and [editions](https://editions.bevry.me) using [boundation](https://github.com/bevry/boundation)
+
 ## v3.0.0 2020 May 13
 
 -   Support node >= 0.8 but test only against node >= 10
