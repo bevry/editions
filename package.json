@@ -1,6 +1,6 @@
 {
   "name": "editions",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "description": "Publish multiple editions for your JavaScript packages consistently and easily (e.g. source edition, esnext edition, es2015 edition)",
   "homepage": "https://github.com/bevry/editions",
   "license": "MIT",
@@ -12,6 +12,8 @@
     "jsnext",
     "node",
     "syntaxes",
+    "typed",
+    "types",
     "typescript",
     "versions"
   ],
@@ -94,10 +96,11 @@
       }
     }
   ],
+  "types": "./compiled-types/",
   "type": "commonjs",
   "main": "edition-es5/index.js",
   "dependencies": {
-    "errlop": "^3.0.0",
+    "errlop": "^3.2.0",
     "semver": "6.3.0"
   },
   "devDependencies": {
@@ -106,10 +109,10 @@
     "@typescript-eslint/parser": "^2.34.0",
     "assert-helpers": "^6.5.0",
     "eslint": "^7.0.0",
-    "eslint-config-bevry": "^3.5.0",
+    "eslint-config-bevry": "^3.6.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.3",
-    "kava": "^5.1.0",
+    "kava": "^5.2.0",
     "prettier": "^2.0.5",
     "projectz": "^2.2.0",
     "surge": "^0.21.3",
