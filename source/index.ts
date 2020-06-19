@@ -2,7 +2,7 @@
 'use strict'
 
 // Imports
-import pathUtil from 'path'
+import { resolve } from 'path'
 import semver from 'semver'
 import { errtion, stringify, simplifyRange } from './util.js'
 
@@ -179,7 +179,7 @@ if (semver.satisfies(NODE_VERSION, '<0.12')) {
  * @throws An error if the edition failed to load.
  */
 export function loadEdition(edition: Edition, opts: EditionOptions): any {
-	const entry = pathUtil.resolve(
+	const entry = resolve(
 		opts.cwd || '',
 		edition.directory,
 		opts.entry || edition.entry || ''
@@ -428,7 +428,7 @@ export function requirePackage(
 	entry: EditionOptions['entry']
 ): any {
 	// Load the package.json file to fetch `name` for debugging and `editions` for loading
-	const packagePath = pathUtil.resolve(cwd || '', 'package.json')
+	const packagePath = resolve(cwd || '', 'package.json')
 	const { editions } = require(packagePath)
 	const opts = { packagePath, cwd, require, entry }
 	return requireEditions(editions, opts)
