@@ -101,7 +101,7 @@
   "main": "edition-es5/index.js",
   "dependencies": {
     "errlop": "3.9.0",
-    "semver": "6"
+    "semver": "7"
   },
   "devDependencies": {
     "@bevry/update-contributors": "^1.12.0",
