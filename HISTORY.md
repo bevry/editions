@@ -1,5 +1,9 @@
 # History
 
+## v3.16.0 2020 August 4
+
+-   Updated dependencies, [base files](https://github.com/bevry/base), and [editions](https://editions.bevry.me) using [boundation](https://github.com/bevry/boundation)
+
 ## v3.15.0 2020 July 24
 
 -   Moved `semver` dependency from `devDependencies` to `dependencies` where it belongs (regression since v3.5.0, regressed again in v3.13.0)
