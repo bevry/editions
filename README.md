@@ -39,7 +39,7 @@ Publish multiple editions for your JavaScript packages consistently and easily (
 
 [Read the Documentation.](https://editions.bevry.me)
 
-[View the Editions Autoloader API documentation.](http://master.editions.bevry.surge.sh/docs/)
+[View the Editions Autoloader API documentation.](http://master.editions.bevry.surge.sh/docs/globals.html)
 
 <!-- HISTORY/ -->
 

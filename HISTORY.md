@@ -1,5 +1,13 @@
 # History
 
+## v4.0.0 2020 August 13
+
+-   Since v2, engines have been the recommended way of stating compatibility, as such, blacklist functionality is now removed
+    -   If anyone still requires blacklisting over engines, then file an issue
+-   Work towards Deno and Web Browser compatibility
+-   Additional API methods introduced, such that you can determine editions without loading them
+-   Updated dependencies, [base files](https://github.com/bevry/base), and [editions](https://editions.bevry.me) using [boundation](https://github.com/bevry/boundation)
+
 ## v3.16.0 2020 August 4
 
 -   Updated dependencies, [base files](https://github.com/bevry/base), and [editions](https://editions.bevry.me) using [boundation](https://github.com/bevry/boundation)
