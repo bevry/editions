@@ -1,5 +1,9 @@
 # History
 
+## v4.1.0 2020 August 18
+
+-   Updated dependencies, [base files](https://github.com/bevry/base), and [editions](https://editions.bevry.me) using [boundation](https://github.com/bevry/boundation)
+
 ## v4.0.0 2020 August 13
 
 -   Since v2, engines have been the recommended way of stating compatibility, as such, blacklist functionality is now removed
