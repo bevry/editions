@@ -1,5 +1,10 @@
 # History
 
+## v5.0.0 2020 October 27
+
+-   Changed engines from Node.js version `>=0.8` to `>=4` as Node.js versions prior to 4 do not support `require('process')` (they only support the `process` global), however, the process import is necessary for compatibility with Deno, which is more important than supporting 5+ year old Node.js versions
+-   Updated dependencies, [base files](https://github.com/bevry/base), and [editions](https://editions.bevry.me) using [boundation](https://github.com/bevry/boundation)
+
 ## v4.2.0 2020 September 4
 
 -   Updated dependencies, [base files](https://github.com/bevry/base), and [editions](https://editions.bevry.me) using [boundation](https://github.com/bevry/boundation)
