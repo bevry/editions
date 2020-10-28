@@ -1,5 +1,11 @@
 # History
 
+## v6.0.0 2020 October 29
+
+-   Changed semver dependency from `semver` to [`version-range`](https://github.com/bevry/version-range) which is faster, simpler, and supports Deno, completing our Deno compatibility
+    -   While the simplicity of `version-range` does remove support for advanced ranges, it should cover all ranges that are used within editions
+-   Updated dependencies, [base files](https://github.com/bevry/base), and [editions](https://editions.bevry.me) using [boundation](https://github.com/bevry/boundation)
+
 ## v5.0.0 2020 October 27
 
 -   Changed engines from Node.js version `>=0.8` to `>=4` as Node.js versions prior to 4 do not support `require('process')` (they only support the `process` global), however, the process import is necessary for compatibility with Deno, which is more important than supporting 5+ year old Node.js versions

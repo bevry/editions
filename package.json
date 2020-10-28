@@ -1,10 +1,16 @@
 {
   "name": "editions",
-  "version": "5.0.0",
+  "version": "6.0.0",
   "description": "Publish multiple editions for your JavaScript packages consistently and easily (e.g. source edition, esnext edition, es2015 edition)",
   "homepage": "https://github.com/bevry/editions",
   "license": "MIT",
   "keywords": [
+    "allow-env",
+    "allow-read",
+    "deno",
+    "deno-edition",
+    "deno-entry",
+    "denoland",
     "edition",
     "editions",
     "es5",
@@ -113,6 +119,20 @@
         "node": "12 || 14 || 15",
         "browsers": false
       }
+    },
+    {
+      "description": "TypeScript source code made to be compatible with Deno",
+      "directory": "edition-deno",
+      "entry": "index.ts",
+      "tags": [
+        "typescript",
+        "import",
+        "deno"
+      ],
+      "engines": {
+        "deno": true,
+        "browsers": false
+      }
     }
   ],
   "types": "./compiled-types/",
@@ -124,21 +144,22 @@
       "require": "./edition-es5/index.js"
     }
   },
+  "deno": "edition-deno/index.ts",
   "dependencies": {
     "errlop": "^4.0.0",
-    "semver": "6.3.0"
+    "version-range": "^1.0.0"
   },
   "devDependencies": {
     "@bevry/update-contributors": "^1.17.0",
     "@typescript-eslint/eslint-plugin": "^4.6.0",
     "@typescript-eslint/parser": "^4.6.0",
     "assert-helpers": "^8.0.1",
-    "eslint": "^7.12.0",
+    "eslint": "^7.12.1",
     "eslint-config-bevry": "^3.22.0",
-    "eslint-config-prettier": "^6.14.0",
+    "eslint-config-prettier": "^6.15.0",
     "eslint-plugin-prettier": "^3.1.4",
     "kava": "3.2.0",
-    "make-deno-edition": "^1.1.1",
+    "make-deno-edition": "^1.2.0",
     "prettier": "^2.1.2",
     "projectz": "^2.16.0",
     "surge": "^0.21.6",
@@ -188,9 +209,6 @@
     "compiler": "typescript",
     "targets": [
       "ES5"
-    ],
-    "versions": {
-      "semver": 6
-    }
+    ]
   }
 }

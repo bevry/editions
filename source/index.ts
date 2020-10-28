@@ -1,6 +1,6 @@
 // Imports
 import { resolve } from 'path'
-import semver from 'semver'
+import matchRange from 'version-range'
 import { errtion, Errtion } from './util.js'
 import { versions as processVersions } from 'process'
 import { readFileSync } from 'fs'
@@ -205,7 +205,7 @@ export function isCompatibleVersion(
 	if (range === true) return true
 
 	// semver compare
-	if (semver.satisfies(version, range)) {
+	if (matchRange(version, range)) {
 		return true
 	} else if (broadenRange === true) {
 		// broaden range
@@ -213,7 +213,7 @@ export function isCompatibleVersion(
 		if (index !== -1) {
 			const broadenedRange = range.substr(index)
 			// broadened range attempt
-			if (semver.satisfies(version, broadenedRange)) return true
+			if (matchRange(version, broadenedRange)) return true
 			// fail broadened range
 			throw errtion({
 				message: `The edition range [${range}] does not support this engine version [${version}], even when broadened to [${broadenedRange}]`,
