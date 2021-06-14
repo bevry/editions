@@ -434,7 +434,7 @@ export function requirePackage<T>(
 	const { editions } = JSON.parse(readFileSync(packagePath, 'utf8'))
 	// load edition
 	return solicitEdition<T>(editions, {
-		versions: (processVersions as any) as Versions,
+		versions: processVersions as any as Versions,
 		cwd,
 		loader,
 		entry,
