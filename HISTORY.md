@@ -1,5 +1,9 @@
 # History
 
+## v6.2.1 2021 July 28
+
+-   Have package require failures output what package and entry the failure was on.
+
 ## v6.2.0 2021 June 14
 
 -   Updated dependencies, [base files](https://github.com/bevry/base), and [editions](https://editions.bevry.me) using [boundation](https://github.com/bevry/boundation)

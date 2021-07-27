@@ -38,6 +38,7 @@ export interface Edition {
 	 * ```
 	 */
 	description: string
+
 	/**
 	 * The location to where this directory is located. It should be a relative path from the `package.json` file.
 	 * @example
@@ -46,6 +47,7 @@ export interface Edition {
 	 * ```
 	 */
 	directory: string
+
 	/**
 	 * The default entry location for this edition, relative to the edition's directory.
 	 * @example
@@ -54,6 +56,7 @@ export interface Edition {
 	 * ```
 	 */
 	entry: string
+
 	/**
 	 * Any keywords you wish to associate to the edition. Useful for various ecosystem tooling, such as automatic ESNext lint configuration if the `esnext` tag is present in the source edition tags.
 	 * @example
@@ -62,6 +65,7 @@ export interface Edition {
 	 * ```
 	 */
 	tags?: string[]
+
 	/**
 	 * This field is used to specific which environments this edition supports.
 	 * If `false` this edition does not any environment.
@@ -330,7 +334,7 @@ export function isCompatibleEdition(
 
 /**
  * Determine which edition should be loaded.
- * If {@link VersionOptions.broadenRange} is unspecified (the default behaviour), then we attempt to determine a suitable edition without broadening the range, and if that fails, then we try again with the range broadened.
+ * If {@link VersionOptions.broadenRange} is unspecified (the default behavior), then we attempt to determine a suitable edition without broadening the range, and if that fails, then we try again with the range broadened.
  * @returns any suitable editions
  * @throws if no suitable editions
  */
@@ -404,7 +408,7 @@ export function determineEdition(
 
 	// this should never reach here
 	throw errtion({
-		message: `Unable to determine a suitable edition, as an unexpected pathway occured.`,
+		message: `Unable to determine a suitable edition, as an unexpected pathway occurred.`,
 		code: 'editions-autoloader-never',
 	})
 }
@@ -429,14 +433,24 @@ export function requirePackage<T>(
 	loader: LoaderOptions['loader'],
 	entry: PathOptions['entry']
 ): T {
-	// load editions
 	const packagePath = resolve(cwd || '', 'package.json')
-	const { editions } = JSON.parse(readFileSync(packagePath, 'utf8'))
-	// load edition
-	return solicitEdition<T>(editions, {
-		versions: processVersions as any as Versions,
-		cwd,
-		loader,
-		entry,
-	})
+	try {
+		// load editions
+		const { editions } = JSON.parse(readFileSync(packagePath, 'utf8'))
+		// load edition
+		return solicitEdition<T>(editions, {
+			versions: processVersions as any as Versions,
+			cwd,
+			loader,
+			entry,
+		})
+	} catch (error) {
+		throw errtion(
+			{
+				message: `Unable to determine a suitable edition for the package [${packagePath}] and entry [${entry}]`,
+				code: 'editions-autoloader-package',
+			},
+			error
+		)
+	}
 }
