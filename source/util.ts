@@ -1,8 +1,3 @@
-// As Errlop uses Editions, we should use a specific Errlop edition
-// As otherwise, the circular reference may fail on some machines
-// https://github.com/bevry/errlop/issues/2
-import Errlop from 'errlop'
-
 interface ErrtionOptions {
 	/** The message to use for the error */
 	message: string
@@ -10,9 +5,11 @@ interface ErrtionOptions {
 	code: string | number
 	/** The severity level of the error */
 	level?: string | number
+	/** The parent of the error */
+	parent?: Errtion | Error
 }
 
-export interface Errtion extends Errlop, ErrtionOptions {}
+export interface Errtion extends Error, ErrtionOptions {}
 
 /**
  * Allow code and level inputs on Errlop.
@@ -21,14 +18,26 @@ export interface Errtion extends Errlop, ErrtionOptions {}
 export function errtion(
 	this: void,
 	opts: ErrtionOptions,
-	parent?: Errlop | Error
+	parent?: Errtion | Error
 ): Errtion {
+	// extract opts
 	const { code, level } = opts
 	let { message } = opts
+	if (parent == null) parent = opts.parent
+
+	// append message
 	if (code) message = `${code}: ${message}`
 	if (level) message = `${level}: ${message}`
-	const error = new Errlop(message, parent) as Errtion
+	if (parent) message = `${message}\n↪${parent.message || parent}`
+
+	// create error
+	const error = new Error(message) as Errtion
+
+	// add properties
 	if (code) error.code = code
 	if (level) error.level = level
+	if (parent) error.parent = parent
+
+	// return
 	return error
 }

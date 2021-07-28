@@ -31,7 +31,7 @@ export type Versions = { [engine: string]: string }
  */
 export interface Edition {
 	/**
-	 * Use this property to decribe the edition in human readable terms. Such as what it does and who it is for. It is used to reference the edition in user facing reporting, such as error messages.
+	 * Use this property to describe the edition in human readable terms. Such as what it does and who it is for. It is used to reference the edition in user facing reporting, such as error messages.
 	 * @example
 	 * ``` json
 	 * "esnext source code with require for modules"
@@ -353,7 +353,7 @@ export function determineEdition(
 		})
 	}
 
-	// Cycle through the editions determing the above
+	// Cycle through the editions determining the above
 	let failure: Errtion | null = null
 	for (let i = 0; i < editions.length; ++i) {
 		const edition = editions[i]

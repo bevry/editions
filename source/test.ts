@@ -1,6 +1,6 @@
 // External
 import kava from 'kava'
-import { equal } from 'assert-helpers'
+import { equal } from 'assert'
 import { versions as processVersions } from 'process'
 
 // Local
