@@ -127,6 +127,7 @@ export function loadEdition<T>(edition: Edition, opts: LoaderOptions): T {
 		edition.directory,
 		opts.entry || edition.entry || ''
 	)
+
 	if (opts.loader == null) {
 		throw errtion({
 			message: `Could not load the edition [${edition.description}] as no loader was specified. This is probably due to a testing misconfiguration.`,
@@ -134,6 +135,7 @@ export function loadEdition<T>(edition: Edition, opts: LoaderOptions): T {
 			level: 'fatal',
 		})
 	}
+
 	try {
 		return opts.loader.call(edition, entry) as T
 	} catch (loadError) {
@@ -208,36 +210,60 @@ export function isCompatibleVersion(
 
 	if (range === true) return true
 
-	// semver compare
-	if (matchRange(version, range)) {
-		return true
-	} else if (broadenRange === true) {
-		// broaden range
+	// original range
+	try {
+		if (matchRange(version, range)) return true
+	} catch (error) {
+		throw errtion(
+			{
+				message: `The range [${range}] was invalid, something is wrong with the Editions definition.`,
+				code: 'editions-autoloader-invalid-range',
+				level: 'fatal',
+			},
+			error
+		)
+	}
+
+	// broadened range
+	if (broadenRange === true) {
+		// broaden the range
 		const index = range.indexOf('||')
 		if (index !== -1) {
 			const broadenedRange = range.substr(index)
+
 			// broadened range attempt
-			if (matchRange(version, broadenedRange)) return true
+			try {
+				if (matchRange(version, broadenedRange)) return true
+			} catch (error) {
+				throw errtion(
+					{
+						message: `The broadened range [${broadenedRange}] was invalid, something is wrong within Editions.`,
+						code: 'editions-autoloader-invalid-broadened-range',
+						level: 'fatal',
+					},
+					error
+				)
+			}
+
 			// fail broadened range
 			throw errtion({
 				message: `The edition range [${range}] does not support this engine version [${version}], even when broadened to [${broadenedRange}]`,
 				code: 'editions-autoloader-engine-incompatible-broadened',
 			})
 		}
+
 		// give up
 		throw errtion({
 			message: `The edition range [${range}] does not support this engine version [${version}] and could not be broadened`,
 			code: 'editions-autoloader-engine-incompatible-nobroad',
 		})
-	} else {
-		// give up
-		throw errtion({
-			message: `The edition range [${range}] does not support this engine version [${version}]`,
-			code: 'editions-autoloader-engine-incompatible-original',
-		})
 	}
 
-	// return never
+	// give up
+	throw errtion({
+		message: `The edition range [${range}] does not support this engine version [${version}]`,
+		code: 'editions-autoloader-engine-incompatible-original',
+	})
 }
 
 /**
@@ -276,15 +302,19 @@ export function isCompatibleEngines(
 			// deno's std/node/process provides both `deno` and `node` keys
 			// so we don't won't to compare node when it is actually deno
 			if (key === 'node' && versions.deno) continue
+
 			// prepare
 			const engine = engines[key]
 			const version = versions[key]
+
 			// skip for engines this edition does not care about
 			if (version == null) continue
+
 			// check compatibility against all the provided engines it does care about
 			try {
 				isCompatibleVersion(engine, version, opts)
 				compatible = true
+
 				// if any incompatibility, it is thrown, so no need to set to false
 			} catch (rangeError) {
 				throw errtion(
@@ -311,7 +341,7 @@ export function isCompatibleEngines(
 }
 
 /**
- * Checks thaat the {@link Edition} is compatible against the provided versions.
+ * Checks that the {@link Edition} is compatible against the provided versions.
  * @returns if compatible
  * @throws if incompatible
  */
@@ -360,6 +390,7 @@ export function determineEdition(
 		try {
 			isValidEdition(edition)
 			isCompatibleEdition(edition, opts)
+
 			// return the edition if it is successful
 			return edition
 		} catch (error) {
@@ -437,6 +468,7 @@ export function requirePackage<T>(
 	try {
 		// load editions
 		const { editions } = JSON.parse(readFileSync(packagePath, 'utf8'))
+
 		// load edition
 		return solicitEdition<T>(editions, {
 			versions: processVersions as any as Versions,

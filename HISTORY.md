@@ -1,16 +1,25 @@
 # History
 
+## v6.4.1 2021 July 28
+
+-   Progress on [#235](https://github.com/bevry/editions/issues/235)
+-   Correctly identify and report invalid ranges and invalid broadened ranges
+-   Updated dependencies, [base files](https://github.com/bevry/base), and [editions](https://editions.bevry.me) using [boundation](https://github.com/bevry/boundation)
+
 ## v6.4.0 2021 July 28
 
+-   Progress on [#235](https://github.com/bevry/editions/issues/235)
 -   Swapped `Errlop` for an in-house solution, that provides a concise and readable solution for this specific use case
 -   Updated dependencies, [base files](https://github.com/bevry/base), and [editions](https://editions.bevry.me) using [boundation](https://github.com/bevry/boundation)
 
 ## v6.3.0 2021 July 28
 
+-   Progress on [#235](https://github.com/bevry/editions/issues/235)
 -   Updated dependencies, [base files](https://github.com/bevry/base), and [editions](https://editions.bevry.me) using [boundation](https://github.com/bevry/boundation)
 
 ## v6.2.1 2021 July 28
 
+-   Progress on [#235](https://github.com/bevry/editions/issues/235)
 -   Have package require failures output what package and entry the failure was on.
 
 ## v6.2.0 2021 June 14
