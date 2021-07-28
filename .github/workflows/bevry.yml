@@ -17,6 +17,7 @@ jobs:
           - '10'
           - '12'
           - '14'
+          - '16'
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ contains('macos-latest windows-latest', matrix.os) }}
     steps:

@@ -82,6 +82,9 @@ export interface Edition {
 	 * ```
 	 */
 	engines: Engines
+
+	/** If this edition fails to load, then this property provides any accompanying information. */
+	debugging?: Errtion
 }
 
 /** Editions should be ordered from most preferable first to least desirable last. The source edition should always be first, proceeded by compiled editions. */
@@ -225,37 +228,49 @@ export function isCompatibleVersion(
 	}
 
 	// broadened range
+	// https://github.com/bevry/editions/blob/master/HISTORY.md#v210-2018-november-15
+	// If none of the editions for a package match the current node version, editions will try to find a compatible package by converting strict version ranges likes 4 || 6 || 8 || 10 to looser ones like >=4, and if that fails, then it will attempt to load the last edition for the environment.
+	// This brings editions handling of engines closer in line with how node handles it, which is as a warning/recommendation, rather than a requirement/enforcement.
+	// This has the benefit that edition authors can specify ranges as the specific versions that they have tested the edition against that pass, rather than having to omit that information for runtime compatibility.
+	// As such editions will now automatically select the edition with guaranteed support for the environment, and if there are none with guaranteed support, then editions will select the one is most likely supported, and if there are none that are likely supported, then it will try the last edition, which should be the most compatible edition.
+	// This is timely, as node v11 is now the version most developers use, yet if edition authors specified only LTS releases, then the editions autoloader would reject loading on v11, despite compatibility being likely with the most upper edition.
+	// NOTE: That there is only one broadening chance per package, once a broadened edition has been returned, a load will be attempted, and if it fails, then the package failed. This is intentional.
 	if (broadenRange === true) {
-		// broaden the range
-		const index = range.indexOf('||')
-		if (index !== -1) {
-			const broadenedRange = range.substr(index)
+		// check if range can be broadened, validate it and extract
+		const broadenedRangeRegex = /^\s*([0-9.]+)\s*(\|\|\s*[0-9.]+\s*)*$/
+		const broadenedRangeMatch = range.match(broadenedRangeRegex)
+		const lowestVersion: string =
+			(broadenedRangeMatch && broadenedRangeMatch[1]) || ''
+		// ^ can't do number conversion, as 1.1.1 is not a number
+		// this also converts 0 to '' which is what we want for the next check
 
-			// broadened range attempt
-			try {
-				if (matchRange(version, broadenedRange)) return true
-			} catch (error) {
-				throw errtion(
-					{
-						message: `The broadened range [${broadenedRange}] was invalid, something is wrong within Editions.`,
-						code: 'editions-autoloader-invalid-broadened-range',
-						level: 'fatal',
-					},
-					error
-				)
-			}
-
-			// fail broadened range
+		// confirm the validation
+		if (lowestVersion === '')
 			throw errtion({
-				message: `The edition range [${range}] does not support this engine version [${version}], even when broadened to [${broadenedRange}]`,
-				code: 'editions-autoloader-engine-incompatible-broadened',
+				message: `The range [${range}] is not able to be broadened, only ranges in format of [lowest] or [lowest || ... || ... ] can be broadened. Update the Editions definition and try again.`,
+				code: 'editions-autoloader-unsupported-broadened-range',
+				level: 'fatal',
 			})
+
+		// create the broadened range, and attempt that
+		const broadenedRange = `>= ${lowestVersion}`
+		try {
+			if (matchRange(version, broadenedRange)) return true
+		} catch (error) {
+			throw errtion(
+				{
+					message: `The broadened range [${broadenedRange}] was invalid, something is wrong within Editions.`,
+					code: 'editions-autoloader-invalid-broadened-range',
+					level: 'fatal',
+				},
+				error
+			)
 		}
 
-		// give up
+		// broadened range was incompatible
 		throw errtion({
-			message: `The edition range [${range}] does not support this engine version [${version}] and could not be broadened`,
-			code: 'editions-autoloader-engine-incompatible-nobroad',
+			message: `The edition range [${range}] does not support this engine version [${version}], even when broadened to [${broadenedRange}]`,
+			code: 'editions-autoloader-engine-incompatible-broadened-range',
 		})
 	}
 
@@ -391,7 +406,7 @@ export function determineEdition(
 			isValidEdition(edition)
 			isCompatibleEdition(edition, opts)
 
-			// return the edition if it is successful
+			// Success! Return the edition
 			return edition
 		} catch (error) {
 			if (error.level === 'fatal') {
@@ -411,12 +426,24 @@ export function determineEdition(
 		}
 	}
 
-	//
+	// Report the failure from above
 	if (failure) {
 		// try broadened
 		if (broadenRange == null)
 			try {
-				return determineEdition(editions, { ...opts, broadenRange: true })
+				// return if broadening successfully returned an edition
+				const broadenedEdition = determineEdition(editions, {
+					...opts,
+					broadenRange: true,
+				})
+				return {
+					...broadenedEdition,
+					// bubble the circumstances up in case the loading of the broadened edition fails and needs to be reported
+					debugging: errtion({
+						message: `The edition ${broadenedEdition.description} was selected to be force loaded as its range was broadened.`,
+						code: 'editions-autoloader-attempt-broadened',
+					}),
+				}
 			} catch (error) {
 				throw errtion(
 					{
@@ -451,7 +478,11 @@ export function determineEdition(
  */
 export function solicitEdition<T>(editions: Editions, opts: SolicitOptions): T {
 	const edition = determineEdition(editions, opts)
-	return loadEdition<T>(edition, opts)
+	try {
+		return loadEdition<T>(edition, opts)
+	} catch (error) {
+		throw errtion(error, edition.debugging)
+	}
 }
 
 /**

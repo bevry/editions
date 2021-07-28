@@ -18,6 +18,50 @@ interface Fixture {
 	editions: null | Array<{}>
 }
 const fixtures: Fixture[] = [
+	// pass test cases
+	{
+		test: 'loaded fine',
+		loader(this: Edition) {
+			return this.description
+		},
+		expected: 'is ok',
+		editions: [
+			{
+				description: 'is ok',
+				entry: 'value',
+				directory: 'value',
+				engines: {
+					node: true,
+				},
+			},
+		],
+	},
+	{
+		test: 'loaded last edition',
+		loader(this: Edition) {
+			return this.description
+		},
+		expected: `${process.versions.node} ok`,
+		editions: [
+			{
+				description: 'is not ok',
+				entry: 'value',
+				directory: 'value',
+				engines: {
+					node: '0.6',
+				},
+			},
+			{
+				description: `${process.versions.node} ok`,
+				entry: 'value',
+				directory: 'value',
+				engines: {
+					node: process.versions.node,
+				},
+			},
+		],
+	},
+	// failure test cases
 	{
 		test: 'missing editions',
 		error: 'editions-autoloader-editions-missing',
@@ -116,20 +160,6 @@ const fixtures: Fixture[] = [
 		],
 	},
 	{
-		test: 'skipped due to unsupported node version',
-		error: 'editions-autoloader-engine-incompatible',
-		editions: [
-			{
-				description: 'value',
-				entry: 'value',
-				directory: 'value',
-				engines: {
-					node: '0.6',
-				},
-			},
-		],
-	},
-	{
 		test: 'skipped due to deliberate failure',
 		error: 'editions-autoloader-loader-failed',
 		loader: fail,
@@ -144,45 +174,35 @@ const fixtures: Fixture[] = [
 			},
 		],
 	},
-	// pass test cases
 	{
-		test: 'loaded fine',
-		loader(this: Edition) {
-			return this.description
-		},
-		expected: 'is ok',
+		test: 'skipped due to loading failure after broadening',
+		loader: fail,
+		error: 'editions-autoloader-attempt-broadened',
 		editions: [
 			{
-				description: 'is ok',
-				entry: 'value',
-				directory: 'value',
-				engines: {
-					node: true,
-				},
-			},
-		],
-	},
-	{
-		test: 'loaded last edition',
-		loader(this: Edition) {
-			return this.description
-		},
-		expected: `${process.versions.node} ok`,
-		editions: [
-			{
-				description: 'is not ok',
+				description: 'value',
 				entry: 'value',
 				directory: 'value',
 				engines: {
 					node: '0.6',
 				},
 			},
+		],
+	},
+	// another pass test case
+	{
+		test: 'loaded an unsupported node version that could be broadened',
+		loader(this: Edition) {
+			return this.description
+		},
+		expected: `${process.versions.node} ok`,
+		editions: [
 			{
 				description: `${process.versions.node} ok`,
 				entry: 'value',
 				directory: 'value',
 				engines: {
-					node: process.versions.node,
+					node: '0.6',
 				},
 			},
 		],
@@ -203,7 +223,11 @@ kava.suite('editions', function (suite, test) {
 						fixture.editions as Editions,
 						opts as any
 					)
-					equal(result, fixture.expected, 'result was as expected')
+					equal(
+						result,
+						fixture.expected,
+						`result [${result}] was as expected [${fixture.expected}]`
+					)
 				} catch (err) {
 					if (fixture.error) {
 						const expected = err.stack.toString().indexOf(fixture.error) !== -1
