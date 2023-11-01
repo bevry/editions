@@ -221,14 +221,14 @@ kava.suite('editions', function (suite, test) {
 					}
 					const result = solicitEdition(
 						fixture.editions as Editions,
-						opts as any
+						opts as any,
 					)
 					equal(
 						result,
 						fixture.expected,
-						`result [${result}] was as expected [${fixture.expected}]`
+						`result [${result}] was as expected [${fixture.expected}]`,
 					)
-				} catch (err) {
+				} catch (err: any) {
 					if (fixture.error) {
 						const expected = err.stack.toString().indexOf(fixture.error) !== -1
 						if (expected) {
