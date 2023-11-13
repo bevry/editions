@@ -18,7 +18,7 @@ export interface Errtion extends Error, ErrtionOptions {}
 export function errtion(
 	this: void,
 	opts: ErrtionOptions,
-	parent?: Errtion | Error,
+	parent?: Errtion | Error
 ): Errtion {
 	// extract opts
 	const { code, level } = opts

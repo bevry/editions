@@ -128,7 +128,7 @@ export function loadEdition<T>(edition: Edition, opts: LoaderOptions): T {
 	const entry = resolve(
 		opts.cwd || '',
 		edition.directory,
-		opts.entry || edition.entry || '',
+		opts.entry || edition.entry || ''
 	)
 
 	if (opts.loader == null) {
@@ -149,7 +149,7 @@ export function loadEdition<T>(edition: Edition, opts: LoaderOptions): T {
 				code: 'editions-autoloader-loader-failed',
 				level: 'fatal',
 			},
-			loadError,
+			loadError
 		)
 	}
 }
@@ -168,7 +168,7 @@ export function isValidEdition(edition: Edition): true {
 	) {
 		throw errtion({
 			message: `An edition must have its [description, directory, entry, engines] fields defined, yet all this edition defined were [${Object.keys(
-				edition,
+				edition
 			).join(', ')}]`,
 			code: 'editions-autoloader-invalid-edition',
 			level: 'fatal',
@@ -187,7 +187,7 @@ export function isValidEdition(edition: Edition): true {
 export function isCompatibleVersion(
 	range: Range,
 	version: string,
-	opts: RangeOptions,
+	opts: RangeOptions
 ): true {
 	// prepare
 	const { broadenRange } = opts
@@ -223,7 +223,7 @@ export function isCompatibleVersion(
 				code: 'editions-autoloader-invalid-range',
 				level: 'fatal',
 			},
-			error,
+			error
 		)
 	}
 
@@ -263,7 +263,7 @@ export function isCompatibleVersion(
 					code: 'editions-autoloader-invalid-broadened-range',
 					level: 'fatal',
 				},
-				error,
+				error
 			)
 		}
 
@@ -288,7 +288,7 @@ export function isCompatibleVersion(
  */
 export function isCompatibleEngines(
 	engines: Engines,
-	opts: VersionOptions,
+	opts: VersionOptions
 ): true {
 	// PRepare
 	const { versions } = opts
@@ -337,7 +337,7 @@ export function isCompatibleEngines(
 						message: `The engine [${key}] range of [${engine}] was not compatible against version [${version}].`,
 						code: 'editions-autoloader-engine-error',
 					},
-					rangeError,
+					rangeError
 				)
 			}
 		}
@@ -362,7 +362,7 @@ export function isCompatibleEngines(
  */
 export function isCompatibleEdition(
 	edition: Edition,
-	opts: VersionOptions,
+	opts: VersionOptions
 ): true {
 	try {
 		return isCompatibleEngines(edition.engines, opts)
@@ -372,7 +372,7 @@ export function isCompatibleEdition(
 				message: `The edition [${edition.description}] is not compatible with this environment.`,
 				code: 'editions-autoloader-edition-incompatible',
 			},
-			compatibleError,
+			compatibleError
 		)
 	}
 }
@@ -385,7 +385,7 @@ export function isCompatibleEdition(
  */
 export function determineEdition(
 	editions: Editions,
-	opts: VersionOptions,
+	opts: VersionOptions
 ): Edition {
 	// Prepare
 	const { broadenRange } = opts
@@ -416,7 +416,7 @@ export function determineEdition(
 						code: 'editions-autoloader-fatal',
 						level: 'fatal',
 					},
-					error,
+					error
 				)
 			} else if (failure) {
 				failure = errtion(error, failure)
@@ -450,7 +450,7 @@ export function determineEdition(
 						message: `Unable to determine a suitable edition, even after broadening.`,
 						code: 'editions-autoloader-none-broadened',
 					},
-					error,
+					error
 				)
 			}
 
@@ -460,7 +460,7 @@ export function determineEdition(
 				message: `Unable to determine a suitable edition, as none were suitable.`,
 				code: 'editions-autoloader-none-suitable',
 			},
-			failure,
+			failure
 		)
 	}
 
@@ -493,7 +493,7 @@ export function solicitEdition<T>(editions: Editions, opts: SolicitOptions): T {
 export function requirePackage<T>(
 	cwd: PathOptions['cwd'],
 	loader: LoaderOptions['loader'],
-	entry: PathOptions['entry'],
+	entry: PathOptions['entry']
 ): T {
 	const packagePath = resolve(cwd || '', 'package.json')
 	try {
@@ -513,7 +513,7 @@ export function requirePackage<T>(
 				message: `Unable to determine a suitable edition for the package [${packagePath}] and entry [${entry}]`,
 				code: 'editions-autoloader-package',
 			},
-			error,
+			error
 		)
 	}
 }
