@@ -1,6 +1,6 @@
 {
   "name": "editions",
-  "version": "6.12.0",
+  "version": "6.13.0",
   "description": "Publish multiple editions for your JavaScript packages consistently and easily (e.g. source edition, esnext edition, es2015 edition)",
   "homepage": "https://github.com/bevry/editions",
   "license": "Artistic-2.0",
@@ -127,14 +127,14 @@
     }
   },
   "dependencies": {
-    "version-range": "^3.1.0"
+    "version-range": "^3.2.0"
   },
   "devDependencies": {
     "@bevry/update-contributors": "^1.23.0",
     "@types/node": "^20.9.0",
     "@typescript-eslint/eslint-plugin": "^6.11.0",
     "@typescript-eslint/parser": "^6.11.0",
-    "assert-helpers": "^11.3.0",
+    "assert-helpers": "^11.4.0",
     "eslint": "^8.53.0",
     "eslint-config-bevry": "^4.0.0",
     "eslint-config-prettier": "^9.0.0",
