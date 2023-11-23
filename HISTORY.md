@@ -1,8 +1,12 @@
 # History
 
+## v6.14.2 2023 November 23
+
+-   Fix `version-range` to `^4.5.1` which resolves the v6.14.1 patch
+
 ## v6.14.1 2023 November 23
 
--   Fix `version-range` to v4.4.x to fix circular break due to version-range v4.5 depending upon edition
+-   Fix `version-range` to `~4.4.0` to fix circular break due to version-range v4.5 depending upon edition
 
 ## v6.14.0 2023 November 23
 

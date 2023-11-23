@@ -1,6 +1,6 @@
 {
   "name": "editions",
-  "version": "6.14.1",
+  "version": "6.14.2",
   "description": "Publish multiple editions for your JavaScript packages consistently and easily (e.g. source edition, esnext edition, es2015 edition)",
   "homepage": "https://github.com/bevry/editions",
   "license": "Artistic-2.0",
@@ -101,7 +101,7 @@
         "require"
       ],
       "engines": {
-        "node": "4 || 6 || 8 || 10 || 12 || 14 || 16 || 18 || 20 || 21",
+        "node": true,
         "browsers": false
       }
     },
@@ -116,7 +116,7 @@
         "import"
       ],
       "engines": {
-        "node": "12 || 14 || 16 || 18 || 20 || 21",
+        "node": true,
         "browsers": false
       }
     },
@@ -143,7 +143,7 @@
     }
   },
   "dependencies": {
-    "version-range": "~4.4.0"
+    "version-range": "^4.5.1"
   },
   "devDependencies": {
     "@bevry/update-contributors": "^1.23.0",
@@ -162,6 +162,23 @@
     "typedoc": "^0.25.3",
     "typescript": "5.2.2",
     "valid-directory": "^4.5.0"
+  },
+  "eslintConfig": {
+    "extends": [
+      "bevry"
+    ]
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "boundation": {
+    "browser": false,
+    "compiler": "typescript",
+    "targets": [
+      "ES5"
+    ]
   },
   "scripts": {
     "our:clean": "rm -rf ./docs ./edition* ./es2015 ./es5 ./out ./.next",
@@ -189,22 +206,5 @@
     "our:verify:eslint": "eslint --fix --ignore-pattern '**/*.d.ts' --ignore-pattern '**/vendor/' --ignore-pattern '**/node_modules/' --ext .mjs,.js,.jsx,.ts,.tsx ./source",
     "our:verify:prettier": "prettier --write .",
     "test": "node ./edition-es5/test.js"
-  },
-  "eslintConfig": {
-    "extends": [
-      "bevry"
-    ]
-  },
-  "prettier": {
-    "semi": false,
-    "singleQuote": true,
-    "trailingComma": "es5"
-  },
-  "boundation": {
-    "browser": false,
-    "compiler": "typescript",
-    "targets": [
-      "ES5"
-    ]
   }
 }
