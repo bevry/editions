@@ -1,6 +1,6 @@
 {
   "name": "editions",
-  "version": "6.13.0",
+  "version": "6.14.0",
   "description": "Publish multiple editions for your JavaScript packages consistently and easily (e.g. source edition, esnext edition, es2015 edition)",
   "homepage": "https://github.com/bevry/editions",
   "license": "Artistic-2.0",
@@ -29,18 +29,19 @@
       "githubsponsors",
       "thanksdev",
       "patreon",
-      "flattr",
       "liberapay",
       "buymeacoffee",
       "opencollective",
       "crypto",
       "paypal",
-      "wishlist"
+      "---",
+      "discord",
+      "twitch"
     ],
     "config": {
       "githubWorkflow": "bevry",
       "githubSponsorsUsername": "balupton",
-      "thanksdevGithubUsername": "balupton",
+      "thanksdevGithubUsername": "bevry",
       "buymeacoffeeUsername": "balupton",
       "cryptoURL": "https://bevry.me/crypto",
       "flattrUsername": "balupton",
@@ -49,6 +50,9 @@
       "patreonUsername": "bevry",
       "paypalURL": "https://bevry.me/paypal",
       "wishlistURL": "https://bevry.me/wishlist",
+      "discordServerID": "1147436445783560193",
+      "discordServerInvite": "nQuXddV7VP",
+      "twitchUsername": "balupton",
       "githubUsername": "bevry",
       "githubRepository": "editions",
       "githubSlug": "bevry/editions",
@@ -115,44 +119,56 @@
         "node": "12 || 14 || 16 || 18 || 20 || 21",
         "browsers": false
       }
+    },
+    {
+      "description": "TypeScript compiled Types with Import for modules",
+      "directory": "edition-types",
+      "entry": "index.d.ts",
+      "tags": [
+        "compiled",
+        "types",
+        "import"
+      ],
+      "engines": false
     }
   ],
-  "types": "./compiled-types/",
+  "types": "edition-types/index.d.ts",
   "type": "module",
   "main": "edition-es5/index.js",
   "exports": {
     "node": {
+      "types": "./edition-types/index.d.ts",
       "import": "./edition-es5-esm/index.js",
       "require": "./edition-es5/index.js"
     }
   },
   "dependencies": {
-    "version-range": "^3.2.0"
+    "version-range": "^4.5.0"
   },
   "devDependencies": {
     "@bevry/update-contributors": "^1.23.0",
-    "@types/node": "^20.9.0",
-    "@typescript-eslint/eslint-plugin": "^6.11.0",
-    "@typescript-eslint/parser": "^6.11.0",
-    "assert-helpers": "^11.4.0",
-    "eslint": "^8.53.0",
-    "eslint-config-bevry": "^4.0.0",
+    "@types/node": "^20.9.4",
+    "@typescript-eslint/eslint-plugin": "^6.12.0",
+    "@typescript-eslint/parser": "^6.12.0",
+    "assert-helpers": "^11.5.0",
+    "eslint": "^8.54.0",
+    "eslint-config-bevry": "^5.1.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.1",
-    "kava": "^7.1.0",
+    "kava": "^7.3.0",
     "prettier": "^3.1.0",
-    "projectz": "^3.0.0",
+    "projectz": "^3.3.0",
     "surge": "^0.23.1",
     "typedoc": "^0.25.3",
     "typescript": "5.2.2",
-    "valid-directory": "^4.2.0"
+    "valid-directory": "^4.5.0"
   },
   "scripts": {
     "our:clean": "rm -rf ./docs ./edition* ./es2015 ./es5 ./out ./.next",
-    "our:compile": "npm run our:compile:edition-es5 && npm run our:compile:edition-es5-esm && npm run our:compile:types",
+    "our:compile": "npm run our:compile:edition-es5 && npm run our:compile:edition-es5-esm && npm run our:compile:edition-types",
     "our:compile:edition-es5": "tsc --module commonjs --target ES5 --outDir ./edition-es5 --project tsconfig.json && ( test ! -d edition-es5/source || ( mv edition-es5/source edition-temp && rm -rf edition-es5 && mv edition-temp edition-es5 ) ) && printf '%s' '{\"type\": \"commonjs\"}' > edition-es5/package.json",
     "our:compile:edition-es5-esm": "tsc --module ESNext --target ES5 --outDir ./edition-es5-esm --project tsconfig.json && ( test ! -d edition-es5-esm/source || ( mv edition-es5-esm/source edition-temp && rm -rf edition-es5-esm && mv edition-temp edition-es5-esm ) ) && printf '%s' '{\"type\": \"module\"}' > edition-es5-esm/package.json",
-    "our:compile:types": "tsc --project tsconfig.json --emitDeclarationOnly --declaration --declarationMap --declarationDir ./compiled-types && ( test ! -d compiled-types/source || ( mv compiled-types/source edition-temp && rm -rf compiled-types && mv edition-temp compiled-types ) )",
+    "our:compile:edition-types": "tsc --emitDeclarationOnly --declaration --declarationMap --declarationDir ./edition-types --project tsconfig.json && ( test ! -d edition-types/source || ( mv edition-types/source edition-temp && rm -rf edition-types && mv edition-temp edition-types ) )",
     "our:deploy": "printf '%s\n' 'no need for this project'",
     "our:meta": "npm run our:meta:contributors && npm run our:meta:docs && npm run our:meta:projectz",
     "our:meta:contributors": "update-contributors",
