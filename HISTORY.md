@@ -1,5 +1,9 @@
 # History
 
+## v6.15.0 2023 November 23
+
+-   Updated dependencies, [base files](https://github.com/bevry/base), and [editions](https://editions.bevry.me) using [boundation](https://github.com/bevry/boundation)
+
 ## v6.14.2 2023 November 23
 
 -   Fix `version-range` to `^4.5.1` which resolves the v6.14.1 patch
