@@ -1,6 +1,6 @@
 {
   "name": "editions",
-  "version": "6.14.0",
+  "version": "6.14.1",
   "description": "Publish multiple editions for your JavaScript packages consistently and easily (e.g. source edition, esnext edition, es2015 edition)",
   "homepage": "https://github.com/bevry/editions",
   "license": "Artistic-2.0",
@@ -143,7 +143,7 @@
     }
   },
   "dependencies": {
-    "version-range": "^4.5.0"
+    "version-range": "~4.4.0"
   },
   "devDependencies": {
     "@bevry/update-contributors": "^1.23.0",

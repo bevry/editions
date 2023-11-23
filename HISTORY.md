@@ -1,5 +1,9 @@
 # History
 
+## v6.14.1 2023 November 23
+
+-   Fix `version-range` to v4.4.x to fix circular break due to version-range v4.5 depending upon edition
+
 ## v6.14.0 2023 November 23
 
 -   Updated dependencies, [base files](https://github.com/bevry/base), and [editions](https://editions.bevry.me) using [boundation](https://github.com/bevry/boundation)
