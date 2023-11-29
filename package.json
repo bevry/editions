@@ -222,10 +222,8 @@
     "trailingComma": "es5"
   },
   "boundation": {
+    "comment": "editions isn't for browsers, and editions can't use editions",
     "browser": false,
-    "compiler": "typescript",
-    "targets": [
-      "ES5"
-    ]
+    "editionsAutoloader": false
   }
 }
