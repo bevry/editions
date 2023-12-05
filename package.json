@@ -1,6 +1,6 @@
 {
   "name": "editions",
-  "version": "6.17.0",
+  "version": "6.18.0",
   "description": "Publish multiple editions for your JavaScript packages consistently and easily (e.g. source edition, esnext edition, es2015 edition)",
   "homepage": "https://github.com/bevry/editions",
   "license": "Artistic-2.0",
@@ -163,20 +163,20 @@
   },
   "deno": "edition-deno/index.ts",
   "dependencies": {
-    "version-range": "^4.9.0"
+    "version-range": "^4.10.0"
   },
   "devDependencies": {
     "@bevry/update-contributors": "^1.23.0",
-    "@types/node": "^20.10.1",
-    "@typescript-eslint/eslint-plugin": "^6.13.1",
-    "@typescript-eslint/parser": "^6.13.1",
-    "assert-helpers": "^11.7.0",
-    "eslint": "^8.54.0",
+    "@types/node": "^20.10.3",
+    "@typescript-eslint/eslint-plugin": "^6.13.2",
+    "@typescript-eslint/parser": "^6.13.2",
+    "assert-helpers": "^11.8.0",
+    "eslint": "^8.55.0",
     "eslint-config-bevry": "^5.2.0",
-    "eslint-config-prettier": "^9.0.0",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.0.1",
     "kava": "^7.4.0",
-    "make-deno-edition": "^2.0.0",
+    "make-deno-edition": "^2.0.1",
     "prettier": "^3.1.0",
     "projectz": "^3.4.0",
     "typedoc": "^0.25.4",
@@ -219,7 +219,8 @@
   "prettier": {
     "semi": false,
     "singleQuote": true,
-    "trailingComma": "es5"
+    "trailingComma": "es5",
+    "endOfLine": "lf"
   },
   "boundation": {
     "comment": "editions isn't for browsers, and editions can't use editions",
