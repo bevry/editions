@@ -12,7 +12,6 @@
 <br class="badge-separator" />
 <span class="badge-githubsponsors"><a href="https://github.com/sponsors/balupton" title="Donate to this project using GitHub Sponsors"><img src="https://img.shields.io/badge/github-donate-yellow.svg" alt="GitHub Sponsors donate button" /></a></span>
 <span class="badge-thanksdev"><a href="https://thanks.dev/u/gh/bevry" title="Donate to this project using ThanksDev"><img src="https://img.shields.io/badge/thanksdev-donate-yellow.svg" alt="ThanksDev donate button" /></a></span>
-<span class="badge-patreon"><a href="https://patreon.com/bevry" title="Donate to this project using Patreon"><img src="https://img.shields.io/badge/patreon-donate-yellow.svg" alt="Patreon donate button" /></a></span>
 <span class="badge-liberapay"><a href="https://liberapay.com/bevry" title="Donate to this project using Liberapay"><img src="https://img.shields.io/badge/liberapay-donate-yellow.svg" alt="Liberapay donate button" /></a></span>
 <span class="badge-buymeacoffee"><a href="https://buymeacoffee.com/balupton" title="Donate to this project using Buy Me A Coffee"><img src="https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg" alt="Buy Me A Coffee donate button" /></a></span>
 <span class="badge-opencollective"><a href="https://opencollective.com/bevry" title="Donate to this project using Open Collective"><img src="https://img.shields.io/badge/open%20collective-donate-yellow.svg" alt="Open Collective donate button" /></a></span>
@@ -72,7 +71,6 @@ Publish multiple editions for your JavaScript packages consistently and easily (
 
 <span class="badge-githubsponsors"><a href="https://github.com/sponsors/balupton" title="Donate to this project using GitHub Sponsors"><img src="https://img.shields.io/badge/github-donate-yellow.svg" alt="GitHub Sponsors donate button" /></a></span>
 <span class="badge-thanksdev"><a href="https://thanks.dev/u/gh/bevry" title="Donate to this project using ThanksDev"><img src="https://img.shields.io/badge/thanksdev-donate-yellow.svg" alt="ThanksDev donate button" /></a></span>
-<span class="badge-patreon"><a href="https://patreon.com/bevry" title="Donate to this project using Patreon"><img src="https://img.shields.io/badge/patreon-donate-yellow.svg" alt="Patreon donate button" /></a></span>
 <span class="badge-liberapay"><a href="https://liberapay.com/bevry" title="Donate to this project using Liberapay"><img src="https://img.shields.io/badge/liberapay-donate-yellow.svg" alt="Liberapay donate button" /></a></span>
 <span class="badge-buymeacoffee"><a href="https://buymeacoffee.com/balupton" title="Donate to this project using Buy Me A Coffee"><img src="https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg" alt="Buy Me A Coffee donate button" /></a></span>
 <span class="badge-opencollective"><a href="https://opencollective.com/bevry" title="Donate to this project using Open Collective"><img src="https://img.shields.io/badge/open%20collective-donate-yellow.svg" alt="Open Collective donate button" /></a></span>
@@ -81,39 +79,46 @@ Publish multiple editions for your JavaScript packages consistently and easily (
 
 #### Sponsors
 
--   [Andrew Nesbitt](https://nesbitt.io) — Software engineer and researcher
--   [Balsa](https://balsa.com) — We're Balsa, and we're building tools for builders.
--   [Codecov](https://codecov.io) — Empower developers with tools to improve code quality and testing.
+-   [Andrew Nesbitt](https://nesbitt.io) — Working on mapping the world of open source software @ecosyste-ms  and empowering developers with @octobox
+-   [Divinci ™](https://divinci.ai) — A more comfortable AI conversation experience, with friends! 🤖🖤
+-   [Mr. Henry](https://mrhenry.be)
 -   [Poonacha Medappa](https://poonachamedappa.com)
--   [Rob Morris](https://github.com/Rob-Morris)
--   [Sentry](https://sentry.io) — Real-time crash reporting for your web apps, mobile apps, and games.
--   [Syntax](https://syntax.fm) — Syntax Podcast
+-   [Roboflow](https://roboflow.com)
+-   [Square](https://github.com/square)
 
 #### Donors
 
 -   [Andrew Nesbitt](https://nesbitt.io)
+-   [Ángel González](https://univunix.com)
+-   [Arjun Aditya](https://arjunaditya.xyz)
 -   [Armen Mkrtchian](https://mogoni.dev)
 -   [Balsa](https://balsa.com)
+-   [Canonical](https://canonical.com)
 -   [Chad](https://opencollective.com/chad8)
 -   [Codecov](https://codecov.io)
+-   [Divinci ™](https://divinci.ai)
 -   [dr.dimitru](https://veliovgroup.com)
 -   [Elliott Ditman](https://elliottditman.com)
 -   [entroniq](https://gitlab.com/entroniq)
+-   [Frontend Masters](https://FrontendMasters.com)
 -   [GitHub](https://github.com/about)
 -   [Hunter Beast](https://cryptoquick.com)
 -   [Jean-Luc Geering](https://github.com/jlgeering)
--   [Michael Duane Mooring](https://mdm.cc)
+-   [Lee Driscoll](https://leedriscoll.me)
+-   [Michael Duane Mooring](https://divinci.app)
 -   [Michael Harry Scepaniak](https://michaelscepaniak.com)
 -   [Mohammed Shah](https://github.com/smashah)
 -   [Mr. Henry](https://mrhenry.be)
--   [Nermal](https://arjunaditya.vercel.app)
--   [Pleo](https://www.pleo.io)
+-   [Pleo](https://pleo.io)
 -   [Poonacha Medappa](https://poonachamedappa.com)
--   [Rob Morris](https://github.com/Rob-Morris)
 -   [Robert de Forest](https://github.com/rdeforest)
+-   [Rob Morris](https://linktr.ee/recipromancer)
+-   [Roboflow](https://roboflow.com)
+-   [Scott Kempson](https://github.com/scokem)
 -   [Sentry](https://sentry.io)
 -   [ServieJS](https://github.com/serviejs)
 -   [Skunk Team](https://skunk.team)
+-   [Square](https://github.com/square)
 -   [Syntax](https://syntax.fm)
 -   [WriterJohnBuck](https://github.com/WriterJohnBuck)
 

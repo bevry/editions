@@ -1,13 +1,21 @@
-// Imports
-import { resolve } from 'path'
+/* eslint-disable n/no-sync -- we want the sync methods, as it is a sync operation */
+
 import matchRange from 'version-range'
-import { errtion, Errtion } from './util.js'
+
+import { resolve } from 'path'
 import { versions as processVersions } from 'process'
 import { readFileSync } from 'fs'
 
+import { detailedError, ErrorDetailed } from './util.js'
+
+/** A version range specification that can be a string (semver range) or boolean (true for any version, false for none) */
 export type Range = string | boolean
-export type Engines = false | { [engine: string]: Range }
-export type Versions = { [engine: string]: string }
+
+/** Engine specifications that can be false (unsupported) or a record of engine names to their version ranges */
+export type Engines = false | Record<string, Range>
+
+/** A record of environment versions, mapping environment names to their version strings */
+export type Versions = Record<string, string>
 
 /**
  * Edition entries must conform to the following specification.
@@ -31,7 +39,7 @@ export type Versions = { [engine: string]: string }
  */
 export interface Edition {
 	/**
-	 * Use this property to describe the edition in human readable terms. Such as what it does and who it is for. It is used to reference the edition in user facing reporting, such as error messages.
+	 * Use this property to describe the edition in human readable terms. Such as what it does and who it is for. It is used to reference the edition in user facing reporting, such messages.
 	 * @example
 	 * ``` json
 	 * "esnext source code with require for modules"
@@ -84,12 +92,13 @@ export interface Edition {
 	engines: Engines
 
 	/** If this edition fails to load, then this property provides any accompanying information. */
-	debugging?: Errtion
+	debugging?: ErrorDetailed
 }
 
 /** Editions should be ordered from most preferable first to least desirable last. The source edition should always be first, proceeded by compiled editions. */
-export type Editions = Array<Edition>
+export type Editions = Edition[]
 
+/** Options for specifying paths when loading editions */
 export interface PathOptions {
 	/** If provided, this edition entry is used instead of the default entry. */
 	entry: string
@@ -98,29 +107,37 @@ export interface PathOptions {
 	cwd: string
 }
 
+/**
+ * The method that will load the entry of the edition.
+ * For CJS files this should be set to the `require` method.
+ * For MJS files this should be set to `(path: string) => import(path)`.
+ */
+export type Loader = (this: Edition, path: string) => unknown
+
+/** Options for loading editions, including optional path configuration and a required loader function */
 export interface LoaderOptions extends Partial<PathOptions> {
-	/**
-	 * The method that will load the entry of the edition.
-	 * For CJS files this should be set to the `require` method.
-	 * For MJS files this should be set to `(path: string) => import(path)`.
-	 */
-	loader: <T>(this: Edition, path: string) => T
+	loader: Loader
 }
 
+/** Options for configuring how version ranges are handled */
 export interface RangeOptions {
 	/** If `true`, then ranges such as `x || y` are changed to `>=x`. */
 	broadenRange?: boolean
 }
 
+/** Options that combine range configuration with version information */
 export interface VersionOptions extends RangeOptions {
 	/** The versions of our current environment. */
 	versions: Versions
 }
 
+/** Combined options for soliciting (determining and loading) editions */
 export interface SolicitOptions extends LoaderOptions, VersionOptions {}
 
 /**
  * Load the {@link Edition} with the loader.
+ * @param edition - The edition to load
+ * @param opts - The loading options containing the loader function and optional path configurations
  * @returns The result of the loaded edition.
  * @throws If failed to load, an error is thrown with the reason.
  */
@@ -132,7 +149,7 @@ export function loadEdition<T>(edition: Edition, opts: LoaderOptions): T {
 	)
 
 	if (opts.loader == null) {
-		throw errtion({
+		throw detailedError({
 			message: `Could not load the edition [${edition.description}] as no loader was specified. This is probably due to a testing misconfiguration.`,
 			code: 'editions-autoloader-loader-missing',
 			level: 'fatal',
@@ -141,9 +158,9 @@ export function loadEdition<T>(edition: Edition, opts: LoaderOptions): T {
 
 	try {
 		return opts.loader.call(edition, entry) as T
-	} catch (loadError: any) {
+	} catch (loadError: unknown) {
 		// Note the error with more details
-		throw errtion(
+		throw detailedError(
 			{
 				message: `Failed to load the entry [${entry}] of edition [${edition.description}].`,
 				code: 'editions-autoloader-loader-failed',
@@ -155,32 +172,66 @@ export function loadEdition<T>(edition: Edition, opts: LoaderOptions): T {
 }
 
 /**
- * Verify the {@link Edition} has all the required properties.
- * @returns if valid
+ * Asserts that the the {@link Edition} has all the required properties.
+ * @param edition - The {@link Edition} to validate
  * @throws if invalid
  */
-export function isValidEdition(edition: Edition): true {
+export function assertEdition(edition: unknown): asserts edition is Edition {
 	if (
+		!edition ||
+		typeof edition !== 'object' ||
+		!('description' in edition) ||
 		!edition.description ||
+		!('directory' in edition) ||
 		!edition.directory ||
+		!('entry' in edition) ||
 		!edition.entry ||
+		!('engines' in edition) ||
 		edition.engines == null
 	) {
-		throw errtion({
+		throw detailedError({
 			message: `An edition must have its [description, directory, entry, engines] fields defined, yet all this edition defined were [${Object.keys(
-				edition
+				edition as object
 			).join(', ')}]`,
 			code: 'editions-autoloader-invalid-edition',
 			level: 'fatal',
 		})
 	}
+}
 
-	// valid
+/**
+ * Verify the {@link Edition} has all the required properties.
+ * @deprecated Use {@link isValidEdition} instead.
+ * @param edition - The edition to validate
+ * @returns if valid
+ * @throws if invalid
+ */
+export function isValidEdition(edition: Edition): true {
+	assertEdition(edition)
 	return true
 }
 
 /**
+ * Asserts that the provided {@link Editions} array is valid and non-empty.
+ * @param editions - The {@link Editions} array to validate
+ * @throws if editions is missing, not an array, or empty
+ */
+export function assertEditions(
+	editions: unknown
+): asserts editions is Editions {
+	if (!editions || !Array.isArray(editions) || editions.length === 0) {
+		throw detailedError({
+			message: 'No editions were specified.',
+			code: 'editions-autoloader-editions-missing',
+		})
+	}
+}
+
+/**
  * Is this {@link Edition} suitable for these versions?
+ * @param range - The version range to check compatibility against
+ * @param version - The actual version to check
+ * @param opts - The range options for configuring how ranges are handled
  * @returns if compatible
  * @throws if incompatible
  */
@@ -193,20 +244,20 @@ export function isCompatibleVersion(
 	const { broadenRange } = opts
 
 	if (!version)
-		throw errtion({
+		throw detailedError({
 			message: `No version was specified to compare the range [${range}] against`,
 			code: 'editions-autoloader-engine-version-missing',
 			level: 'fatal',
 		})
 
 	if (range == null || range === '')
-		throw errtion({
+		throw detailedError({
 			message: `The edition range was not specified, so unable to compare against the version [${version}]`,
 			code: 'editions-autoloader-engine-range-missing',
 		})
 
 	if (range === false)
-		throw errtion({
+		throw detailedError({
 			message: `The edition range does not support this engine`,
 			code: 'editions-autoloader-engine-unsupported',
 		})
@@ -216,8 +267,8 @@ export function isCompatibleVersion(
 	// original range
 	try {
 		if (matchRange(version, range)) return true
-	} catch (error: any) {
-		throw errtion(
+	} catch (error: unknown) {
+		throw detailedError(
 			{
 				message: `The range [${range}] was invalid, something is wrong with the Editions definition.`,
 				code: 'editions-autoloader-invalid-range',
@@ -238,7 +289,7 @@ export function isCompatibleVersion(
 	if (broadenRange === true) {
 		// check if range can be broadened, validate it and extract
 		const broadenedRangeRegex = /^\s*([0-9.]+)\s*(\|\|\s*[0-9.]+\s*)*$/
-		const broadenedRangeMatch = range.match(broadenedRangeRegex)
+		const broadenedRangeMatch = broadenedRangeRegex.exec(range)
 		const lowestVersion: string =
 			(broadenedRangeMatch && broadenedRangeMatch[1]) || ''
 		// ^ can't do number conversion, as 1.1.1 is not a number
@@ -246,7 +297,7 @@ export function isCompatibleVersion(
 
 		// confirm the validation
 		if (lowestVersion === '')
-			throw errtion({
+			throw detailedError({
 				message: `The range [${range}] is not able to be broadened, only ranges in format of [lowest] or [lowest || ... || ... ] can be broadened. Update the Editions definition and try again.`,
 				code: 'editions-autoloader-unsupported-broadened-range',
 				level: 'fatal',
@@ -256,8 +307,8 @@ export function isCompatibleVersion(
 		const broadenedRange = `>= ${lowestVersion}`
 		try {
 			if (matchRange(version, broadenedRange)) return true
-		} catch (error: any) {
-			throw errtion(
+		} catch (error: unknown) {
+			throw detailedError(
 				{
 					message: `The broadened range [${broadenedRange}] was invalid, something is wrong within Editions.`,
 					code: 'editions-autoloader-invalid-broadened-range',
@@ -268,14 +319,14 @@ export function isCompatibleVersion(
 		}
 
 		// broadened range was incompatible
-		throw errtion({
+		throw detailedError({
 			message: `The edition range [${range}] does not support this engine version [${version}], even when broadened to [${broadenedRange}]`,
 			code: 'editions-autoloader-engine-incompatible-broadened-range',
 		})
 	}
 
 	// give up
-	throw errtion({
+	throw detailedError({
 		message: `The edition range [${range}] does not support this engine version [${version}]`,
 		code: 'editions-autoloader-engine-incompatible-original',
 	})
@@ -283,6 +334,8 @@ export function isCompatibleVersion(
 
 /**
  * Checks that the provided engines are compatible against the provided versions.
+ * @param engines - The engine specifications to check compatibility for
+ * @param opts - The version options containing environment versions and range settings
  * @returns if compatible
  * @throws if incompatible
  */
@@ -295,7 +348,7 @@ export function isCompatibleEngines(
 
 	// Check engines exist
 	if (!engines) {
-		throw errtion({
+		throw detailedError({
 			message: `The edition had no engines to compare against the environment`,
 			code: 'editions-autoloader-invalid-engines',
 		})
@@ -303,7 +356,7 @@ export function isCompatibleEngines(
 
 	// Check versions exist
 	if (!versions) {
-		throw errtion({
+		throw detailedError({
 			message: `No versions were supplied to compare the engines against`,
 			code: 'editions-autoloader-invalid-versions',
 			level: 'fatal',
@@ -313,7 +366,7 @@ export function isCompatibleEngines(
 	// Check each version
 	let compatible = false
 	for (const key in engines) {
-		if (engines.hasOwnProperty(key)) {
+		if (Object.prototype.hasOwnProperty.call(engines, key)) {
 			// deno's std/node/process provides both `deno` and `node` keys
 			// so we don't won't to compare node when it is actually deno
 			if (key === 'node' && versions.deno) continue
@@ -331,8 +384,8 @@ export function isCompatibleEngines(
 				compatible = true
 
 				// if any incompatibility, it is thrown, so no need to set to false
-			} catch (rangeError: any) {
-				throw errtion(
+			} catch (rangeError: unknown) {
+				throw detailedError(
 					{
 						message: `The engine [${key}] range of [${engine}] was not compatible against version [${version}].`,
 						code: 'editions-autoloader-engine-error',
@@ -345,7 +398,7 @@ export function isCompatibleEngines(
 
 	// if there were no matching engines, then throw
 	if (!compatible) {
-		throw errtion({
+		throw detailedError({
 			message: `There were no supported engines in which this environment provides.`,
 			code: 'editions-autoloader-engine-mismatch',
 		})
@@ -357,6 +410,8 @@ export function isCompatibleEngines(
 
 /**
  * Checks that the {@link Edition} is compatible against the provided versions.
+ * @param edition - The edition to check for compatibility
+ * @param opts - The version options containing environment versions and range settings
  * @returns if compatible
  * @throws if incompatible
  */
@@ -366,8 +421,8 @@ export function isCompatibleEdition(
 ): true {
 	try {
 		return isCompatibleEngines(edition.engines, opts)
-	} catch (compatibleError: any) {
-		throw errtion(
+	} catch (compatibleError: unknown) {
+		throw detailedError(
 			{
 				message: `The edition [${edition.description}] is not compatible with this environment.`,
 				code: 'editions-autoloader-edition-incompatible',
@@ -380,6 +435,8 @@ export function isCompatibleEdition(
 /**
  * Determine which edition should be loaded.
  * If {@link VersionOptions.broadenRange} is unspecified (the default behavior), then we attempt to determine a suitable edition without broadening the range, and if that fails, then we try again with the range broadened.
+ * @param editions - The array of editions to choose from
+ * @param opts - The version options containing environment versions and range settings
  * @returns any suitable editions
  * @throws if no suitable editions
  */
@@ -388,29 +445,22 @@ export function determineEdition(
 	opts: VersionOptions
 ): Edition {
 	// Prepare
+	assertEditions(editions)
 	const { broadenRange } = opts
 
-	// Check
-	if (!editions || editions.length === 0) {
-		throw errtion({
-			message: 'No editions were specified.',
-			code: 'editions-autoloader-editions-missing',
-		})
-	}
-
 	// Cycle through the editions determining the above
-	let failure: Errtion | null = null
+	let failure: unknown = null
 	for (let i = 0; i < editions.length; ++i) {
 		const edition = editions[i]
 		try {
-			isValidEdition(edition)
+			assertEdition(edition)
 			isCompatibleEdition(edition, opts)
-
 			// Success! Return the edition
 			return edition
-		} catch (error: any) {
-			if (error.level === 'fatal') {
-				throw errtion(
+		} catch (error: unknown) {
+			// Failure!
+			if ((error as ErrorDetailed)?.level === 'fatal') {
+				throw detailedError(
 					{
 						message: `Unable to determine a suitable edition due to failure.`,
 						code: 'editions-autoloader-fatal',
@@ -419,7 +469,7 @@ export function determineEdition(
 					error
 				)
 			} else if (failure) {
-				failure = errtion(error, failure)
+				failure = detailedError(error, failure)
 			} else {
 				failure = error
 			}
@@ -439,13 +489,13 @@ export function determineEdition(
 				return {
 					...broadenedEdition,
 					// bubble the circumstances up in case the loading of the broadened edition fails and needs to be reported
-					debugging: errtion({
+					debugging: detailedError({
 						message: `The edition ${broadenedEdition.description} was selected to be force loaded as its range was broadened.`,
 						code: 'editions-autoloader-attempt-broadened',
 					}),
 				}
-			} catch (error: any) {
-				throw errtion(
+			} catch (error: unknown) {
+				throw detailedError(
 					{
 						message: `Unable to determine a suitable edition, even after broadening.`,
 						code: 'editions-autoloader-none-broadened',
@@ -455,7 +505,7 @@ export function determineEdition(
 			}
 
 		// fail
-		throw errtion(
+		throw detailedError(
 			{
 				message: `Unable to determine a suitable edition, as none were suitable.`,
 				code: 'editions-autoloader-none-suitable',
@@ -465,7 +515,7 @@ export function determineEdition(
 	}
 
 	// this should never reach here
-	throw errtion({
+	throw detailedError({
 		message: `Unable to determine a suitable edition, as an unexpected pathway occurred.`,
 		code: 'editions-autoloader-never',
 	})
@@ -473,20 +523,31 @@ export function determineEdition(
 
 /**
  * Determine which edition should be loaded, and attempt to load it.
+ * @param editions - The array of editions to choose from
+ * @param opts - The solicit options containing loader, versions, and path configurations
  * @returns the loaded result of the suitable edition
  * @throws if no suitable editions, or the edition failed to load
  */
 export function solicitEdition<T>(editions: Editions, opts: SolicitOptions): T {
 	const edition = determineEdition(editions, opts)
 	try {
+		// Load the edition
 		return loadEdition<T>(edition, opts)
-	} catch (error: any) {
-		throw errtion(error, edition.debugging)
+	} catch (error: unknown) {
+		// Failure!
+		if (edition.debugging) {
+			throw detailedError(error, edition.debugging)
+		} else {
+			throw error
+		}
 	}
 }
 
 /**
  * Cycle through the editions for a package, determine the compatible edition, and load it.
+ * @param cwd - The current working directory path where the package.json is located
+ * @param loader - The loader function to use for loading the selected edition
+ * @param entry - The entry point to load from the selected edition
  * @returns the loaded result of the suitable edition
  * @throws if no suitable editions, or if the edition failed to load
  */
@@ -497,18 +558,22 @@ export function requirePackage<T>(
 ): T {
 	const packagePath = resolve(cwd || '', 'package.json')
 	try {
-		// load editions
-		const { editions } = JSON.parse(readFileSync(packagePath, 'utf8'))
+		// Load editions
+		const { editions } = JSON.parse(readFileSync(packagePath, 'utf8')) as {
+			editions?: unknown
+		}
+		assertEditions(editions)
 
-		// load edition
+		// Load edition
 		return solicitEdition<T>(editions, {
-			versions: processVersions as any as Versions,
-			cwd,
-			loader,
-			entry,
+			versions: processVersions as Versions,
+			cwd: cwd,
+			loader: loader,
+			entry: entry,
 		})
-	} catch (error: any) {
-		throw errtion(
+	} catch (error: unknown) {
+		// Failure!
+		throw detailedError(
 			{
 				message: `Unable to determine a suitable edition for the package [${packagePath}] and entry [${entry}]`,
 				code: 'editions-autoloader-package',
